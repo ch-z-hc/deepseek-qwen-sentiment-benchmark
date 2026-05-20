@@ -1,4 +1,4 @@
-﻿# DeepSeek Teacher to Qwen3 Student: 涓枃鎯呮劅鍒嗘瀽 Hard Set 涓?LoRA 钂搁寰皟
+# DeepSeek Teacher to Qwen3 Student: 涓枃鎯呮劅鍒嗘瀽 Hard Set 涓?LoRA 钂搁寰皟
 
 鏈」鐩娇鐢?DeepSeek 浣滀负澶栭儴寮烘ā鍨?Teacher锛屾瀯寤哄棰嗗煙涓枃鎯呮劅鍒嗘瀽 Hard Set锛屽苟浣跨敤鏈湴 Qwen3-8B 浣滀负 Student 妯″瀷杩涜 PEFT/LoRA 鍙傛暟楂樻晥寰皟銆?
 椤圭洰閲嶇偣涓嶆槸绠€鍗曟儏鎰熷垎绫伙紝鑰屾槸楠岃瘉鏈湴澶фā鍨嬪湪寮辨儏缁€佽浆鎶樿〃杈俱€佽竟鐣屾牱鏈笂鐨勭ǔ瀹氭€э紝骞堕€氳繃 DeepSeek Teacher 鏁版嵁钂搁鎻愬崌鏈湴 Qwen3-8B 鐨勫垽鏂兘鍔涖€?
