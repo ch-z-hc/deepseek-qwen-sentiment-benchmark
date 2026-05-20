@@ -212,14 +212,3 @@ The base Qwen3-8B model is **not** included — download it separately from Hugg
 ## Windows Users
 
 See [docs/REPRODUCE_WINDOWS.md](docs/REPRODUCE_WINDOWS.md) for a detailed Windows-specific guide.
-
-## Resume Summary
-
-```
-• Built a Chinese sentiment analysis Hard Set (8 domains, 3 classes, 1,440 samples) using DeepSeek as teacher model,
-  focusing on weak sentiment, concessive expressions, and boundary samples.
-• Fine-tuned local Qwen3-8B with PEFT/LoRA, improving Hard Set accuracy from 62.50% to 98.61%
-  (Macro-F1: 59.48% → 98.61%).
-• External recheck with DeepSeek-v4-pro achieved 94.03% accuracy, validating label consistency.
-• Full pipeline is reproducible with a single conda environment and .env configuration.
-```
