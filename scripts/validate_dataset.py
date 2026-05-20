@@ -57,7 +57,7 @@ def validate_file(path: Path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_dir", default="data_deepseek_hard")
+    parser.add_argument("--data_dir", default="data/deepseek_hard")
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)

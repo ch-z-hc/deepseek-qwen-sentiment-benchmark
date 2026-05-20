@@ -131,7 +131,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--base_model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
     parser.add_argument("--lora_path", type=str, default="./models/qwen3-8b-lora-deepseek-hard-step300")
-    parser.add_argument("--test_file", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "test.json"))
+    parser.add_argument("--test_file", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data/deepseek_hard"), "test.json"))
     parser.add_argument("--output_dir", type=str, default="results/deepseek_hard/lora_step300")
     parser.add_argument("--device", type=str, default="cuda:0" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--batch_size", type=int, default=4)

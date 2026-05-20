@@ -33,8 +33,8 @@ def setup_local_cache(root: Path):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
-    parser.add_argument("--train_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "tokenized_train"))
-    parser.add_argument("--eval_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "tokenized_test"))
+    parser.add_argument("--train_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data/deepseek_hard"), "tokenized_train"))
+    parser.add_argument("--eval_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data/deepseek_hard"), "tokenized_test"))
     parser.add_argument("--output_dir", type=str, default="./models/qwen3-8b-lora")
     parser.add_argument("--num_train_epochs", type=float, default=1.0)
     parser.add_argument("--max_steps", type=int, default=100)

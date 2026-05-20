@@ -16,10 +16,13 @@ logs/
 *.log
 
 # Local base model / checkpoints
+models/Qwen3-8B/
+models/qwen3-8b-lora-*/
 checkpoints/
 *.bin
 *.pt
 *.pth
+*.safetensors
 
 # Tokenized datasets are derived and can be regenerated
 **/tokenized_train/

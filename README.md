@@ -76,7 +76,7 @@ cp .env.example .env
 # Edit .env with your settings:
 #   DEEPSEEK_API_KEY=your_key
 #   QWEN3_MODEL_PATH=./models/Qwen3-8B
-#   DATA_DIR=data_deepseek_hard
+#   DATA_DIR=data/deepseek_hard
 #   HF_LOCAL_FILES_ONLY=1
 ```
 
@@ -85,7 +85,7 @@ Or export directly:
 ```bash
 export DEEPSEEK_API_KEY="your_key"
 export QWEN3_MODEL_PATH="/path/to/Qwen3-8B"
-export DATA_DIR="data_deepseek_hard"
+export DATA_DIR="data/deepseek_hard"
 export HF_LOCAL_FILES_ONLY="1"
 ```
 
@@ -101,7 +101,7 @@ python scripts/check_env.py
 
 ```bash
 python scripts/generate_deepseek_hard_data.py \
-  --output_dir data_deepseek_hard \
+  --output_dir data/deepseek_hard \
   --model deepseek-v4-flash \
   --train_per_bucket 200 \
   --test_per_bucket 60
@@ -110,7 +110,7 @@ python scripts/generate_deepseek_hard_data.py \
 ### 2. Validate Dataset
 
 ```bash
-python scripts/validate_dataset.py --data_dir data_deepseek_hard
+python scripts/validate_dataset.py --data_dir data/deepseek_hard
 ```
 
 ### 3. Tokenize
@@ -118,7 +118,7 @@ python scripts/validate_dataset.py --data_dir data_deepseek_hard
 ```bash
 python scripts/tokenize_deepseek_data.py \
   --model_path $QWEN3_MODEL_PATH \
-  --data_dir data_deepseek_hard \
+  --data_dir data/deepseek_hard \
   --max_length 256
 ```
 
@@ -128,7 +128,7 @@ python scripts/tokenize_deepseek_data.py \
 python scripts/evaluate.py \
   --model_path $QWEN3_MODEL_PATH \
   --base_tokenizer_path $QWEN3_MODEL_PATH \
-  --test_file data_deepseek_hard/test.json \
+  --test_file data/deepseek_hard/test.json \
   --output_dir results/deepseek_hard/base_qwen3 \
   --device cuda:0 \
   --batch_size 4
@@ -138,7 +138,7 @@ python scripts/evaluate.py \
 
 ```bash
 python scripts/evaluate_deepseek_classifier.py \
-  --test_file data_deepseek_hard/test.json \
+  --test_file data/deepseek_hard/test.json \
   --output_dir results/deepseek_hard/deepseek_classifier_pro \
   --model deepseek-v4-pro \
   --batch_size 20
@@ -149,8 +149,8 @@ python scripts/evaluate_deepseek_classifier.py \
 ```bash
 python scripts/train_lora.py \
   --model_path $QWEN3_MODEL_PATH \
-  --train_dataset data_deepseek_hard/tokenized_train \
-  --eval_dataset data_deepseek_hard/tokenized_test \
+  --train_dataset data/deepseek_hard/tokenized_train \
+  --eval_dataset data/deepseek_hard/tokenized_test \
   --output_dir ./models/qwen3-8b-lora-deepseek-hard-step300 \
   --per_device_train_batch_size 1 \
   --gradient_accumulation_steps 4 \
@@ -163,7 +163,7 @@ python scripts/train_lora.py \
 python scripts/evaluate_lora.py \
   --base_model_path $QWEN3_MODEL_PATH \
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 \
-  --test_file data_deepseek_hard/test.json \
+  --test_file data/deepseek_hard/test.json \
   --output_dir results/deepseek_hard/lora_step300 \
   --device cuda:0 \
   --batch_size 4

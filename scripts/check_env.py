@@ -75,7 +75,7 @@ def main():
     else:
         fail("QWEN3_MODEL_PATH", f"not found: {qwen_path}")
 
-    data_dir = Path(os.environ.get("DATA_DIR", "data_deepseek_hard"))
+    data_dir = Path(os.environ.get("DATA_DIR", "data/deepseek_hard"))
     if data_dir.exists():
         ok("DATA_DIR", data_dir)
         for f in ["train.json", "test.json"]:

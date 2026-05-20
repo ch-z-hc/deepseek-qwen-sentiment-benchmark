@@ -179,7 +179,7 @@ def batched(items, batch_size):
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--test_file", type=str, default="data_deepseek_hard/test.json")
+    p.add_argument("--test_file", type=str, default="data/deepseek_hard/test.json")
     p.add_argument("--output_dir", type=str, default="results/deepseek_hard/deepseek_classifier")
     p.add_argument("--model", type=str, default="deepseek-v4-flash")
     p.add_argument("--batch_size", type=int, default=20)

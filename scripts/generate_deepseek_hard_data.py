@@ -211,7 +211,7 @@ def generate_split(client, args, split: str, per_bucket: int):
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--output_dir", type=str, default="data_deepseek_hard")
+    p.add_argument("--output_dir", type=str, default="data/deepseek_hard")
     p.add_argument("--model", type=str, default="deepseek-v4-flash")
     p.add_argument("--train_per_bucket", type=int, default=200)
     p.add_argument("--test_per_bucket", type=int, default=60)

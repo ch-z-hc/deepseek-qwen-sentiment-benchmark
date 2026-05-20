@@ -65,7 +65,7 @@ def to_supervised_example(example, tokenizer, max_length: int):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
-    parser.add_argument("--data_dir", type=str, default=os.environ.get("DATA_DIR", "data_deepseek_hard"))
+    parser.add_argument("--data_dir", type=str, default=os.environ.get("DATA_DIR", "data/deepseek_hard"))
     parser.add_argument("--max_length", type=int, default=256)
     return parser.parse_args()
 
