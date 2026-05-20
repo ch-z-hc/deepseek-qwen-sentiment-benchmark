@@ -2,7 +2,7 @@
 
 This project uses **DeepSeek** as an external strong teacher model to build a multi-domain Chinese sentiment analysis **Hard Set**, then fine-tunes a local **Qwen3-8B** student model via **PEFT/LoRA**.
 
-The focus is not simple sentiment classification, but verifying the stability of local LLMs on **weak sentiment, concessive expressions (转折表达), and boundary samples**, and improving the local model's judgment through DeepSeek teacher data distillation.
+The focus is not simple sentiment classification, but verifying the stability of local LLMs on **weak sentiment, concessive expressions, and boundary samples**, and improving the local model's judgment through DeepSeek teacher data distillation.
 
 ## Final Results
 
