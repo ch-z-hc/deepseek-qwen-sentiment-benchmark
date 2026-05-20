@@ -95,7 +95,7 @@ def predict_batch(model, tokenizer, batch, device, max_new_tokens):
         padding=True,
         truncation=True,
         max_length=512,
-    ).to(device)
+    ).to(model.device)
 
     generated = model.generate(
         **inputs,
@@ -170,12 +170,19 @@ def main():
 
     print(f"[INFO] Loading base model from {base_model_path}")
     dtype = torch.float16 if args.device.startswith("cuda") else torch.float32
-    base_model = AutoModelForCausalLM.from_pretrained(
-        str(base_model_path),
+    model_kwargs = dict(
         trust_remote_code=True,
         local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         torch_dtype=dtype,
-    ).to(args.device)
+    )
+    if args.device.startswith("cuda"):
+        model_kwargs["device_map"] = "auto"
+        model_kwargs["load_in_4bit"] = True
+        model_kwargs["bnb_4bit_compute_dtype"] = torch.float16
+        model_kwargs["bnb_4bit_use_double_quant"] = True
+    base_model = AutoModelForCausalLM.from_pretrained(str(base_model_path), **model_kwargs)
+    if not args.device.startswith("cuda"):
+        base_model = base_model.to(args.device)
 
     print(f"[INFO] Loading LoRA adapter from {lora_path}")
     model = PeftModel.from_pretrained(base_model, str(lora_path))

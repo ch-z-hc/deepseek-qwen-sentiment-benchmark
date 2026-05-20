@@ -105,7 +105,7 @@ def predict_batch(model, tokenizer, batch: List[Dict], device: str, max_new_toke
         padding=True,
         truncation=True,
         max_length=512,
-    ).to(device)
+    ).to(model.device)
 
     generated = model.generate(
         **inputs,
@@ -181,12 +181,19 @@ def main():
 
     print(f"[INFO] Loading model from {model_path} on {args.device}")
     dtype = torch.float16 if args.device.startswith("cuda") else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(
-        str(model_path),
+    model_kwargs = dict(
         trust_remote_code=True,
         local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         torch_dtype=dtype,
-    ).to(args.device)
+    )
+    if args.device.startswith("cuda"):
+        model_kwargs["device_map"] = "auto"
+        model_kwargs["load_in_4bit"] = True
+        model_kwargs["bnb_4bit_compute_dtype"] = torch.float16
+        model_kwargs["bnb_4bit_use_double_quant"] = True
+    model = AutoModelForCausalLM.from_pretrained(str(model_path), **model_kwargs)
+    if not args.device.startswith("cuda"):
+        model = model.to(args.device)
     model.eval()
 
     test_data = load_json(test_file)
