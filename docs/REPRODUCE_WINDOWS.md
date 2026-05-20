@@ -28,7 +28,37 @@ Then install project dependencies:
 pip install -r requirements.txt
 ```
 
-## 2. Configure environment
+## 2. Download Qwen3-8B
+
+The base model is required for both evaluation and LoRA training.
+
+**Hugging Face (international):**
+
+```powershell
+pip install huggingface_hub
+huggingface-cli download Qwen/Qwen3-8B --local-dir D:\models\Qwen3-8B
+```
+
+**ModelScope (China, faster):**
+
+```powershell
+pip install modelscope
+modelscope download --model Qwen/Qwen3-8B --local_dir D:\models\Qwen3-8B
+```
+
+**Git clone (if CLI tools are unavailable):**
+
+```powershell
+# Hugging Face
+git clone https://huggingface.co/Qwen/Qwen3-8B D:\models\Qwen3-8B
+
+# Or HF mirror (China)
+git clone https://hf-mirror.com/Qwen/Qwen3-8B D:\models\Qwen3-8B
+```
+
+> Model page: [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) | [ModelScope](https://modelscope.cn/models/Qwen/Qwen3-8B)
+
+## 3. Configure environment
 
 ```powershell
 Copy-Item .env.example .env
@@ -53,13 +83,13 @@ $env:DATA_DIR="data_deepseek_hard"
 $env:HF_LOCAL_FILES_ONLY="1"
 ```
 
-## 3. Check environment
+## 4. Check environment
 
 ```powershell
 python scripts/check_env.py
 ```
 
-## 4. Generate tiny smoke-test dataset
+## 5. Generate tiny smoke-test dataset
 
 ```powershell
 python scripts/generate_deepseek_hard_data.py `
@@ -71,13 +101,13 @@ python scripts/generate_deepseek_hard_data.py `
   --sleep 0.5
 ```
 
-## 5. Validate dataset
+## 6. Validate dataset
 
 ```powershell
 python scripts/validate_dataset.py --data_dir data_deepseek_hard
 ```
 
-## 6. Tokenize
+## 7. Tokenize
 
 ```powershell
 python scripts/tokenize_deepseek_data.py `
@@ -86,7 +116,7 @@ python scripts/tokenize_deepseek_data.py `
   --max_length 256
 ```
 
-## 7. Evaluate base model
+## 8. Evaluate base model
 
 GPU:
 
@@ -112,7 +142,7 @@ python scripts/evaluate.py `
   --batch_size 1
 ```
 
-## 8. Train LoRA
+## 9. Train LoRA
 
 GPU strongly recommended:
 
@@ -127,7 +157,7 @@ python scripts/train_lora.py `
   --max_steps 300
 ```
 
-## 9. Evaluate LoRA
+## 10. Evaluate LoRA
 
 ```powershell
 python scripts/evaluate_lora.py `

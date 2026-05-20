@@ -39,13 +39,43 @@ pip install torch --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 ```
 
-### 2. Configure
+### 2. Download Qwen3-8B
+
+The base model is required for both evaluation and LoRA training.
+
+**Hugging Face (international):**
+
+```bash
+pip install huggingface_hub
+huggingface-cli download Qwen/Qwen3-8B --local-dir ./models/Qwen3-8B
+```
+
+**ModelScope (China, faster):**
+
+```bash
+pip install modelscope
+modelscope download --model Qwen/Qwen3-8B --local_dir ./models/Qwen3-8B
+```
+
+**Git clone (if CLI tools are unavailable):**
+
+```bash
+# Hugging Face
+git clone https://huggingface.co/Qwen/Qwen3-8B ./models/Qwen3-8B
+
+# Or HF mirror (China)
+git clone https://hf-mirror.com/Qwen/Qwen3-8B ./models/Qwen3-8B
+```
+
+> Model page: [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) | [ModelScope](https://modelscope.cn/models/Qwen/Qwen3-8B)
+
+### 3. Configure
 
 ```bash
 cp .env.example .env
 # Edit .env with your settings:
 #   DEEPSEEK_API_KEY=your_key
-#   QWEN3_MODEL_PATH=/path/to/Qwen3-8B
+#   QWEN3_MODEL_PATH=./models/Qwen3-8B
 #   DATA_DIR=data_deepseek_hard
 #   HF_LOCAL_FILES_ONLY=1
 ```
@@ -59,7 +89,7 @@ export DATA_DIR="data_deepseek_hard"
 export HF_LOCAL_FILES_ONLY="1"
 ```
 
-### 3. Verify Environment
+### 4. Verify Environment
 
 ```bash
 python scripts/check_env.py
