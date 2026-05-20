@@ -9,7 +9,7 @@ Commit the clean repository:
 
 ## Release assets
 
-Upload files from release_assets/ to GitHub Release:
+Upload files from `release_assets/` to GitHub Release:
 
 - qwen3-8b-lora-deepseek-hard-step300.tar.gz
 - deepseek_hard_dataset_json.tar.gz
@@ -19,7 +19,7 @@ Upload files from release_assets/ to GitHub Release:
 
 - DeepSeek API Key
 - Local Qwen3-8B base model
-- .cache/
-- wandb/
+- `.cache/`
+- `wandb/`
 - tokenized datasets
 - intermediate failed checkpoints
