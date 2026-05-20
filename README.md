@@ -1,13 +1,10 @@
-# DeepSeek Teacher to Qwen3 Student: 中文情感分析 Hard Set 与 LoRA 蒸馏微调
+﻿# DeepSeek Teacher to Qwen3 Student: 涓枃鎯呮劅鍒嗘瀽 Hard Set 涓?LoRA 钂搁寰皟
 
-本项目使用 DeepSeek 作为外部强模型 Teacher，构建多领域中文情感分析 Hard Set，并使用本地 Qwen3-8B 作为 Student 模型进行 PEFT/LoRA 参数高效微调。
-
-项目重点不是简单情感分类，而是验证本地大模型在弱情绪、转折表达、边界样本上的稳定性，并通过 DeepSeek Teacher 数据蒸馏提升本地 Qwen3-8B 的判断能力。
-
+鏈」鐩娇鐢?DeepSeek 浣滀负澶栭儴寮烘ā鍨?Teacher锛屾瀯寤哄棰嗗煙涓枃鎯呮劅鍒嗘瀽 Hard Set锛屽苟浣跨敤鏈湴 Qwen3-8B 浣滀负 Student 妯″瀷杩涜 PEFT/LoRA 鍙傛暟楂樻晥寰皟銆?
+椤圭洰閲嶇偣涓嶆槸绠€鍗曟儏鎰熷垎绫伙紝鑰屾槸楠岃瘉鏈湴澶фā鍨嬪湪寮辨儏缁€佽浆鎶樿〃杈俱€佽竟鐣屾牱鏈笂鐨勭ǔ瀹氭€э紝骞堕€氳繃 DeepSeek Teacher 鏁版嵁钂搁鎻愬崌鏈湴 Qwen3-8B 鐨勫垽鏂兘鍔涖€?
 ## Final Results
 
-DeepSeek-hard 测试集，共 1440 条样本。
-
+DeepSeek-hard 娴嬭瘯闆嗭紝鍏?1440 鏉℃牱鏈€?
 | Model / Annotator | Test Set | Accuracy | Macro-F1 |
 |---|---|---:|---:|
 | Base Qwen3-8B | DeepSeek-hard | 62.50% | 59.48% |
@@ -16,30 +13,25 @@ DeepSeek-hard 测试集，共 1440 条样本。
 
 ## Project Highlights
 
-- 使用 DeepSeek 构建覆盖 8 个领域、3 类情感的中文短评论 Hard Set。
-- Hard Set 聚焦弱情绪、转折表达和边界样本。
-- 使用 DeepSeek-v4-pro 进行外部复判，复判准确率达 94.03%。
-- 使用 PEFT/LoRA 对本地 Qwen3-8B 进行参数高效微调。
-- LoRA 微调后，Hard Set Accuracy 从 62.50% 提升到 98.61%。
-
+- 浣跨敤 DeepSeek 鏋勫缓瑕嗙洊 8 涓鍩熴€? 绫绘儏鎰熺殑涓枃鐭瘎璁?Hard Set銆?- Hard Set 鑱氱劍寮辨儏缁€佽浆鎶樿〃杈惧拰杈圭晫鏍锋湰銆?- 浣跨敤 DeepSeek-v4-pro 杩涜澶栭儴澶嶅垽锛屽鍒ゅ噯纭巼杈?94.03%銆?- 浣跨敤 PEFT/LoRA 瀵规湰鍦?Qwen3-8B 杩涜鍙傛暟楂樻晥寰皟銆?- LoRA 寰皟鍚庯紝Hard Set Accuracy 浠?62.50% 鎻愬崌鍒?98.61%銆?
 ## Repository Structure
 
     .
-    ├── README.md
-    ├── requirements.txt
-    ├── .env.example
-    ├── .gitignore
-    ├── configs/
-    ├── docs/
-    ├── scripts/
-    ├── data/
-    │   ├── deepseek_hard/
-    │   └── samples/
-    ├── results/
-    │   ├── deepseek_hard/
-    │   └── final_summary/
-    └── models/
-        └── README_MODEL_ARTIFACT.md
+    鈹溾攢鈹€ README.md
+    鈹溾攢鈹€ requirements.txt
+    鈹溾攢鈹€ .env.example
+    鈹溾攢鈹€ .gitignore
+    鈹溾攢鈹€ configs/
+    鈹溾攢鈹€ docs/
+    鈹溾攢鈹€ scripts/
+    鈹溾攢鈹€ data/
+    鈹?  鈹溾攢鈹€ deepseek_hard/
+    鈹?  鈹斺攢鈹€ samples/
+    鈹溾攢鈹€ results/
+    鈹?  鈹溾攢鈹€ deepseek_hard/
+    鈹?  鈹斺攢鈹€ final_summary/
+    鈹斺攢鈹€ models/
+        鈹斺攢鈹€ README_MODEL_ARTIFACT.md
 
 ## Environment
 
@@ -47,7 +39,7 @@ DeepSeek-hard 测试集，共 1440 条样本。
     pip install -r requirements.txt
     export DEEPSEEK_API_KEY="your_key"
 
-本项目默认本地模型路径：
+鏈」鐩粯璁ゆ湰鍦版ā鍨嬭矾寰勶細
 
     /data/lys/models/Qwen3-8B
 
@@ -56,7 +48,7 @@ DeepSeek-hard 测试集，共 1440 条样本。
 ### 1. Generate DeepSeek Hard Set
 
     python scripts/generate_deepseek_hard_data.py \
-      --output_dir data_deepseek_hard \
+      --output_dir data/deepseek_hard \
       --model deepseek-v4-flash \
       --train_per_bucket 200 \
       --test_per_bucket 60
@@ -65,13 +57,13 @@ DeepSeek-hard 测试集，共 1440 条样本。
 
     python scripts/tokenize_deepseek_data.py \
       --model_path /data/lys/models/Qwen3-8B \
-      --data_dir data_deepseek_hard
+      --data_dir data/deepseek_hard
 
 ### 3. Evaluate Base Qwen3-8B
 
     CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py \
       --model_path /data/lys/models/Qwen3-8B \
-      --test_file data_deepseek_hard/test.json \
+      --test_file data/deepseek_hard/test.json \
       --output_dir results/deepseek_hard/base_qwen3 \
       --device cuda:0 \
       --batch_size 4
@@ -79,7 +71,7 @@ DeepSeek-hard 测试集，共 1440 条样本。
 ### 4. DeepSeek-v4-pro External Recheck
 
     python scripts/evaluate_deepseek_classifier.py \
-      --test_file data_deepseek_hard/test.json \
+      --test_file data/deepseek_hard/test.json \
       --output_dir results/deepseek_hard/deepseek_classifier_pro \
       --model deepseek-v4-pro \
       --batch_size 20
@@ -88,8 +80,8 @@ DeepSeek-hard 测试集，共 1440 条样本。
 
     CUDA_VISIBLE_DEVICES=0 python scripts/train_lora.py \
       --model_path /data/lys/models/Qwen3-8B \
-      --train_dataset data_deepseek_hard/tokenized_train \
-      --eval_dataset data_deepseek_hard/tokenized_test \
+      --train_dataset data/deepseek_hard/tokenized_train \
+      --eval_dataset data/deepseek_hard/tokenized_test \
       --output_dir ./models/qwen3-8b-lora-deepseek-hard-step300 \
       --per_device_train_batch_size 1 \
       --gradient_accumulation_steps 4 \
@@ -100,7 +92,7 @@ DeepSeek-hard 测试集，共 1440 条样本。
     CUDA_VISIBLE_DEVICES=0 python scripts/evaluate_lora.py \
       --base_model_path /data/lys/models/Qwen3-8B \
       --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 \
-      --test_file data_deepseek_hard/test.json \
+      --test_file data/deepseek_hard/test.json \
       --output_dir results/deepseek_hard/lora_step300 \
       --device cuda:0 \
       --batch_size 4
@@ -115,7 +107,7 @@ The base Qwen3-8B model is not included.
 
 ## Resume Version
 
-    \item 使用 DeepSeek 作为外部强模型构建覆盖 8 个领域、3 类情感的中文短评论 Hard Set，重点包含弱情绪、转折表达和边界样本
-    \item 基于本地 Qwen3-8B 构建学生模型，使用 PEFT/LoRA 进行参数高效微调，将 DeepSeek 的情感标注标准蒸馏到本地模型
-    \item 在 1440 条 DeepSeek-hard 测试集上，Base Qwen3-8B Accuracy 为 62.50\%，LoRA 微调后提升至 98.61\%，Macro-F1 从 59.48\% 提升至 98.61\%
-    \item 引入 DeepSeek-v4-pro 进行外部复判，复判准确率达 94.03\%，验证 Hard Set 标签标准具有较高一致性
+    \item 浣跨敤 DeepSeek 浣滀负澶栭儴寮烘ā鍨嬫瀯寤鸿鐩?8 涓鍩熴€? 绫绘儏鎰熺殑涓枃鐭瘎璁?Hard Set锛岄噸鐐瑰寘鍚急鎯呯华銆佽浆鎶樿〃杈惧拰杈圭晫鏍锋湰
+    \item 鍩轰簬鏈湴 Qwen3-8B 鏋勫缓瀛︾敓妯″瀷锛屼娇鐢?PEFT/LoRA 杩涜鍙傛暟楂樻晥寰皟锛屽皢 DeepSeek 鐨勬儏鎰熸爣娉ㄦ爣鍑嗚捀棣忓埌鏈湴妯″瀷
+    \item 鍦?1440 鏉?DeepSeek-hard 娴嬭瘯闆嗕笂锛孊ase Qwen3-8B Accuracy 涓?62.50\%锛孡oRA 寰皟鍚庢彁鍗囪嚦 98.61\%锛孧acro-F1 浠?59.48\% 鎻愬崌鑷?98.61\%
+    \item 寮曞叆 DeepSeek-v4-pro 杩涜澶栭儴澶嶅垽锛屽鍒ゅ噯纭巼杈?94.03\%锛岄獙璇?Hard Set 鏍囩鏍囧噯鍏锋湁杈冮珮涓€鑷存€?
