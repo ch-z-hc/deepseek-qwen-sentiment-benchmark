@@ -8,11 +8,11 @@ The focus is not simple sentiment classification, but verifying the stability of
 
 DeepSeek-hard test set: 1,440 samples across 8 domains.
 
-| Model / Annotator | Test Set | Accuracy | Macro-F1 |
-|---|---|---|---|
-| Base Qwen3-8B | DeepSeek-hard | 62.50% | 59.48% |
-| DeepSeek-v4-pro (recheck) | DeepSeek-hard | 94.03% | 93.89% |
-| **Qwen3-8B + LoRA (step 300)** | DeepSeek-hard | **98.61%** | **98.61%** |
+| Model / Annotator | Test Set | Accuracy |
+|---|---|---|
+| Base Qwen3-8B | DeepSeek-hard | 62.50% |
+| DeepSeek-v4-pro (recheck) | DeepSeek-hard | 94.03% |
+| **Qwen3-8B + LoRA (step 300)** | DeepSeek-hard | **98.61%** |
 
 ## Project Highlights
 

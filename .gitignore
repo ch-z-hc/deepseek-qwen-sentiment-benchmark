@@ -28,5 +28,8 @@ checkpoints/
 **/tokenized_train/
 **/tokenized_test/
 
+# Resume (do not publish)
+resume_chzhc.tex
+
 # OS
 .DS_Store
