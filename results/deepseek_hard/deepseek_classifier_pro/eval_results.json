@@ -1,0 +1,105 @@
+{
+  "model": "deepseek-v4-pro",
+  "test_file": "data_deepseek_hard/test.json",
+  "num_samples": 1440,
+  "accuracy": 0.9402777777777778,
+  "macro_f1": 0.9388948046805562,
+  "weighted_f1": 0.9388948046805562,
+  "labels": [
+    "负面",
+    "中性",
+    "正面"
+  ],
+  "confusion_matrix": [
+    [
+      479,
+      1,
+      0
+    ],
+    [
+      29,
+      398,
+      53
+    ],
+    [
+      0,
+      3,
+      477
+    ]
+  ],
+  "classification_report": {
+    "负面": {
+      "precision": 0.9429133858267716,
+      "recall": 0.9979166666666667,
+      "f1-score": 0.9696356275303644,
+      "support": 480.0
+    },
+    "中性": {
+      "precision": 0.9900497512437811,
+      "recall": 0.8291666666666667,
+      "f1-score": 0.9024943310657596,
+      "support": 480.0
+    },
+    "正面": {
+      "precision": 0.9,
+      "recall": 0.99375,
+      "f1-score": 0.9445544554455445,
+      "support": 480.0
+    },
+    "accuracy": 0.9402777777777778,
+    "macro avg": {
+      "precision": 0.9443210456901842,
+      "recall": 0.9402777777777778,
+      "f1-score": 0.9388948046805562,
+      "support": 1440.0
+    },
+    "weighted avg": {
+      "precision": 0.9443210456901843,
+      "recall": 0.9402777777777778,
+      "f1-score": 0.9388948046805562,
+      "support": 1440.0
+    }
+  },
+  "per_domain": {
+    "医疗健康": {
+      "total": 180,
+      "correct": 174,
+      "accuracy": 0.9666666666666667
+    },
+    "娱乐": {
+      "total": 180,
+      "correct": 174,
+      "accuracy": 0.9666666666666667
+    },
+    "教育": {
+      "total": 180,
+      "correct": 175,
+      "accuracy": 0.9722222222222222
+    },
+    "数码科技": {
+      "total": 180,
+      "correct": 161,
+      "accuracy": 0.8944444444444445
+    },
+    "旅行": {
+      "total": 180,
+      "correct": 168,
+      "accuracy": 0.9333333333333333
+    },
+    "美食": {
+      "total": 180,
+      "correct": 168,
+      "accuracy": 0.9333333333333333
+    },
+    "购物": {
+      "total": 180,
+      "correct": 165,
+      "accuracy": 0.9166666666666666
+    },
+    "运动健身": {
+      "total": 180,
+      "correct": 169,
+      "accuracy": 0.9388888888888889
+    }
+  }
+}

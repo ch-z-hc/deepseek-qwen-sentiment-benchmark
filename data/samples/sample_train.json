@@ -1,0 +1,722 @@
+[
+  {
+    "id": 912,
+    "text": "耳机连接蓝牙第一次需要手动配对，后面自动连了",
+    "domain": "数码科技",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 204,
+    "text": "上菜顺序有点乱，不过味道无可挑剔",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2253,
+    "text": "飞机晚点两小时，可目的地的一切让我瞬间忘了疲惫",
+    "domain": "旅行",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2006,
+    "text": "音效立体感强，但低音有破音现象",
+    "domain": "数码科技",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1828,
+    "text": "课堂氛围偶尔沉闷，可老师很负责，收获很大",
+    "domain": "教育",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1143,
+    "text": "皮肤科开了支药膏，涂了三天没看到明显变化",
+    "domain": "医疗健康",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 839,
+    "text": "价格比同类店贵，但用料实在，吃着放心。",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4467,
+    "text": "节奏稍微慢了点，但情感刻画非常细腻",
+    "domain": "娱乐",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 712,
+    "text": "作业批改很认真，可每次评语都千篇一律",
+    "domain": "教育",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3456,
+    "text": "包装有点简陋，但里面的东西质量很好，值了",
+    "domain": "购物",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 260,
+    "text": "包装挺精致的，但里面的东西有一半是坏的",
+    "domain": "购物",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 244,
+    "text": "健身直播互动好，但教练总带货卖东西",
+    "domain": "运动健身",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 767,
+    "text": "日落景色挺美，但回程打不到车被困了俩小时",
+    "domain": "旅行",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1791,
+    "text": "蓝牙连接距离大约十米，隔墙会断",
+    "domain": "数码科技",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1905,
+    "text": "这个综艺的剪辑方式我没太看懂，但内容还行",
+    "domain": "娱乐",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4139,
+    "text": "针灸过程不痛，但症状缓解只是暂时的",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 217,
+    "text": "景区厕所数量足够，卫生状况普通",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4597,
+    "text": "抽血的时候护士动作挺熟练，没怎么疼",
+    "domain": "医疗健康",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1628,
+    "text": "健身房的淋浴水温可以，就是水流稍微小了点",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4464,
+    "text": "在线答疑老师回复还算及时，但有时隔天才有消息",
+    "domain": "教育",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3436,
+    "text": "屏幕刷新率不高，但显示细腻，看视频很爽",
+    "domain": "数码科技",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1805,
+    "text": "辅导书内容比较详细，但价格偏高",
+    "domain": "教育",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3679,
+    "text": "酒店位置不错，可电梯坏了只能爬十二层楼",
+    "domain": "旅行",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2278,
+    "text": "酒店早餐种类多，可餐具都没洗干净",
+    "domain": "旅行",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 53,
+    "text": "每天走八千步，已经坚持了三天",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1307,
+    "text": "这部电影的剧情发展比较常规，没有特别出彩的地方",
+    "domain": "娱乐",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3462,
+    "text": "椭圆机阻力调到5，半小时后腿有点酸",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2787,
+    "text": "针灸扎了十五分钟，中途有点酸胀感",
+    "domain": "医疗健康",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2276,
+    "text": "卖家很热情，可惜收到的商品缺了配件",
+    "domain": "购物",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1273,
+    "text": "运动手环的步数计数比手机准一些，但误差不大",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1763,
+    "text": "当地交通方便，公交直达景点",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2757,
+    "text": "服务员态度还行，就是等了四十分钟才上菜",
+    "domain": "美食",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 837,
+    "text": "治疗费用不低，但避免了手术风险，划算",
+    "domain": "医疗健康",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 759,
+    "text": "老师说话慢条斯理，但每句话都切中要点，受益匪浅",
+    "domain": "教育",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3112,
+    "text": "豆腐口感有点老，但味道还算正常",
+    "domain": "美食",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 792,
+    "text": "运动鞋样子好看，但跑两次就开胶了",
+    "domain": "运动健身",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2940,
+    "text": "跑步机屏幕小，但数据很准，配速提升看得见",
+    "domain": "运动健身",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2817,
+    "text": "行程安排比较紧凑，但基本按计划走完了",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2166,
+    "text": "瑜伽垫厚度适中，但刚打开有点味道",
+    "domain": "购物",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 355,
+    "text": "评价说容易掉色，我洗了几次还好，颜色漂亮。",
+    "domain": "购物",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3763,
+    "text": "这部相声作品包袱密度不高，听个热闹",
+    "domain": "娱乐",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4392,
+    "text": "酒店房间大小适中，窗外能看到一小片绿化带",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1022,
+    "text": "课程时间安排不太灵活，不过教练教得特别耐心，学到了很多技巧",
+    "domain": "运动健身",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3100,
+    "text": "小区健身器材基本完好，只有太空漫步机有点响",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 645,
+    "text": "屏幕边框略宽，但显示效果细腻，看视频沉浸感强",
+    "domain": "数码科技",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4522,
+    "text": "奶茶甜度选了正常，喝起来不惊艳也不难喝",
+    "domain": "美食",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2401,
+    "text": "飞机准时起飞了，可行李最后一天才送到房间",
+    "domain": "旅行",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2962,
+    "text": "网上评价很高，但实际治疗方式落后还收费昂贵",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4729,
+    "text": "外观设计不错，但按钮不灵敏，按半天没反应",
+    "domain": "购物",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1575,
+    "text": "相机拍照效果一般，还不如我三年前的旧手机",
+    "domain": "数码科技",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 569,
+    "text": "皮肤科医生挺温柔，但开的药膏越涂越痒",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 375,
+    "text": "老师态度温和，但讲重点时总是含糊其辞",
+    "domain": "教育",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1866,
+    "text": "社团活动多，可学校强制参加，不参加就扣学分",
+    "domain": "教育",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2370,
+    "text": "配件齐全，就是说明书有点简陋",
+    "domain": "购物",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 653,
+    "text": "今天去打了半小时羽毛球，场地灯光不刺眼",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1907,
+    "text": "服务员态度冷淡，可面条的筋道让我想再来。",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 827,
+    "text": "这个弹力带阻力一般，适合新手练腿",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3113,
+    "text": "海边日落美，可涨潮时救生员不在，差点出意外",
+    "domain": "旅行",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2277,
+    "text": "分量一般，不过食材新鲜，烹饪手法很到位。",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3714,
+    "text": "中午去的时候人少，上菜速度挺快",
+    "domain": "美食",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2988,
+    "text": "排队半小时有点烦，但吃到嘴里的那一刻觉得值了",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1332,
+    "text": "今天去健身房跑了半小时，出汗量还行",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3032,
+    "text": "桌子有点油腻，可烤串的火候恰到好处，外焦里嫩",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2910,
+    "text": "吃饭排队半小时，但味道好到让我原谅一切",
+    "domain": "旅行",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1716,
+    "text": "跑步机屏幕显示时间，但没注意看距离",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2187,
+    "text": "康复训练室器材全，但指导老师总迟到还敷衍",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 584,
+    "text": "当地交通还算方便，公交车间隔十五分钟",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1401,
+    "text": "系统更新后界面变了些，目前用着没卡顿",
+    "domain": "数码科技",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4375,
+    "text": "老师教得细，可考试重点从来不划让人摸不着头脑",
+    "domain": "教育",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2005,
+    "text": "键盘手感不错，但延迟高到没法打字",
+    "domain": "数码科技",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1338,
+    "text": "饮料一般，但主菜的口味很地道。",
+    "domain": "美食",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3786,
+    "text": "运动手环记步数还算准，和手机差几十步",
+    "domain": "运动健身",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 3108,
+    "text": "中药房抓药等了二十分钟，药量准确",
+    "domain": "医疗健康",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2211,
+    "text": "药店推荐了这款钙片，成分表上写的是碳酸钙",
+    "domain": "医疗健康",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 4562,
+    "text": "价格实惠，但用了两次就坏了，性价比极低",
+    "domain": "购物",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1799,
+    "text": "飞机起飞时间稍微晚了十分钟，整体行程还行",
+    "domain": "旅行",
+    "label": "中性",
+    "label_id": 1,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 2656,
+    "text": "摄像头凸起容易刮花，但拍照效果比我预期好太多",
+    "domain": "数码科技",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 458,
+    "text": "科室划分清楚，但转诊流程乱成一团",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 1876,
+    "text": "医保报销比例高，可自费项目收费不合理",
+    "domain": "医疗健康",
+    "label": "负面",
+    "label_id": 0,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  },
+  {
+    "id": 262,
+    "text": "相机在暗光下噪点多，但日常拍照效果已经很惊艳了",
+    "domain": "数码科技",
+    "label": "正面",
+    "label_id": 2,
+    "source": "deepseek_hard_generated",
+    "split": "train"
+  }
+]

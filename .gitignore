@@ -1,0 +1,29 @@
+# Secrets
+.env
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Cache / logs
+.cache/
+wandb/
+runs/
+logs/
+*.log
+
+# Local base model / checkpoints
+checkpoints/
+*.bin
+*.pt
+*.pth
+
+# Tokenized datasets are derived and can be regenerated
+**/tokenized_train/
+**/tokenized_test/
+
+# OS
+.DS_Store
