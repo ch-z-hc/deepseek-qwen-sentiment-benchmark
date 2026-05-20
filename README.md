@@ -1,0 +1,127 @@
+# DeepSeek Teacher to Qwen3 Student: ?????? Hard Set ? LoRA ????
+
+????? **DeepSeek** ??????? Teacher???????????? Hard Set?????? **Qwen3-8B** ?? Student ???? **PEFT/LoRA ??????**?
+
+??????????????????????? **?????????????** ????????? DeepSeek Teacher ???????? Qwen3-8B ??????
+
+## Final Results
+
+DeepSeek-hard ????? 1440 ????
+
+| Model / Annotator | Test Set | Accuracy | Macro-F1 |
+|---|---|---:|---:|
+| Base Qwen3-8B | DeepSeek-hard | 62.50% | 59.48% |
+| DeepSeek-v4-pro | DeepSeek-hard | 94.03% | 93.89% |
+| Qwen3-8B LoRA step300 | DeepSeek-hard | **98.61%** | **98.61%** |
+
+## Project Highlights
+
+- ?? DeepSeek ???? 8 ????3 ????????? Hard Set?
+- Hard Set ????????????????
+- ?? DeepSeek-v4-pro ????????????? 94.03%?
+- ?? PEFT/LoRA ??? Qwen3-8B ?????????
+- LoRA ????Hard Set Accuracy ? 62.50% ??? 98.61%?
+
+## Repository Structure
+
+    .
+    ??? README.md
+    ??? requirements.txt
+    ??? .env.example
+    ??? .gitignore
+    ??? configs/
+    ??? docs/
+    ??? scripts/
+    ??? data/
+    ?   ??? deepseek_hard/
+    ?   ??? samples/
+    ??? results/
+    ?   ??? deepseek_hard/
+    ?   ??? final_summary/
+    ??? models/
+        ??? README_MODEL_ARTIFACT.md
+
+## Environment
+
+    conda activate llm-eval
+    pip install -r requirements.txt
+    export DEEPSEEK_API_KEY="your_key"
+
+????????????
+
+    /data/lys/models/Qwen3-8B
+
+## Reproduce
+
+### 1. Generate DeepSeek Hard Set
+
+    python scripts/generate_deepseek_hard_data.py ^
+      --output_dir data/deepseek_hard ^
+      --model deepseek-v4-flash ^
+      --train_per_bucket 200 ^
+      --test_per_bucket 60
+
+### 2. Tokenize
+
+    python scripts/tokenize_deepseek_data.py ^
+      --model_path /data/lys/models/Qwen3-8B ^
+      --data_dir data/deepseek_hard
+
+### 3. Evaluate Base Qwen3-8B
+
+    CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py ^
+      --model_path /data/lys/models/Qwen3-8B ^
+      --test_file data/deepseek_hard/test.json ^
+      --output_dir results/deepseek_hard/base_qwen3 ^
+      --device cuda:0 ^
+      --batch_size 4
+
+### 4. DeepSeek-v4-pro External Recheck
+
+    python scripts/evaluate_deepseek_classifier.py ^
+      --test_file data/deepseek_hard/test.json ^
+      --output_dir results/deepseek_hard/deepseek_classifier_pro ^
+      --model deepseek-v4-pro ^
+      --batch_size 20
+
+### 5. Train Qwen3-LoRA
+
+    CUDA_VISIBLE_DEVICES=0 python scripts/train_lora.py ^
+      --model_path /data/lys/models/Qwen3-8B ^
+      --train_dataset data/deepseek_hard/tokenized_train ^
+      --eval_dataset data/deepseek_hard/tokenized_test ^
+      --output_dir ./models/qwen3-8b-lora-deepseek-hard-step300 ^
+      --per_device_train_batch_size 1 ^
+      --gradient_accumulation_steps 4 ^
+      --max_steps 300
+
+### 6. Evaluate Qwen3-LoRA
+
+    CUDA_VISIBLE_DEVICES=0 python scripts/evaluate_lora.py ^
+      --base_model_path /data/lys/models/Qwen3-8B ^
+      --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 ^
+      --test_file data/deepseek_hard/test.json ^
+      --output_dir results/deepseek_hard/lora_step300 ^
+      --device cuda:0 ^
+      --batch_size 4
+
+## Model Artifact
+
+The final LoRA adapter and project artifacts are provided in GitHub Release:
+
+https://github.com/ch-z-hc/deepseek-qwen-sentiment-benchmark/releases/tag/v1.0
+
+Release assets:
+
+- qwen3-8b-lora-deepseek-hard-step300.tar.gz
+- deepseek_hard_dataset_json.tar.gz
+- final_results_deepseek_hard.tar.gz
+
+The base Qwen3-8B model is not included.
+
+## Resume Version
+
+    \item ?? DeepSeek ??????????? 8 ????3 ????????? Hard Set??????????????????
+    \item ???? Qwen3-8B ????????? PEFT/LoRA ?????????? DeepSeek ??????????????
+    \item ? 1440 ? DeepSeek-hard ?????Base Qwen3-8B Accuracy ? 62.50\%?LoRA ?????? 98.61\%?Macro-F1 ? 59.48\% ??? 98.61\%
+    \item ?? DeepSeek-v4-pro ????????????? 94.03\%??? Hard Set ???????????
