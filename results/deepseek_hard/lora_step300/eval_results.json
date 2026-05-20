@@ -1,6 +1,6 @@
 {
-  "base_model_path": "/data/lys/models/Qwen3-8B",
-  "lora_path": "/data/kaiye/chzhc/auto-eval-benchmark/llm_sentiment_eval_project/models/qwen3-8b-lora-deepseek-hard-step300",
+  "base_model_path": "./models/Qwen3-8B",
+  "lora_path": "./models/qwen3-8b-lora-deepseek-hard-step300",
   "accuracy": 0.9861111111111112,
   "macro_f1": 0.9861195207278062,
   "weighted_f1": 0.9861195207278062,

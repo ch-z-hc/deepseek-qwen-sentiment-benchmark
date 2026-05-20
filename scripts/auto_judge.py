@@ -11,9 +11,9 @@ the human/gold sentiment label, then Cohen's Kappa is calculated between:
 
 Run:
     python scripts/auto_judge.py \
-      --judge_model_path /data/lys/models/Qwen3-8B \
+      --judge_model_path ./models/Qwen3-8B \
       --predictions_file results/predictions.jsonl \
-      --device cuda:4
+      --device cuda:0
 """
 
 import argparse
