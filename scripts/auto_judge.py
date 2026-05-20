@@ -138,7 +138,7 @@ def judge_batch(model, tokenizer, batch: List[Dict], device: str, max_new_tokens
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--judge_model_path", type=str, default="/data/lys/models/Qwen3-8B")
+    parser.add_argument("--judge_model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
     parser.add_argument("--predictions_file", type=str, default="results/predictions.jsonl")
     parser.add_argument("--output_dir", type=str, default="results")
     parser.add_argument("--device", type=str, default="cuda:4")
@@ -184,7 +184,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(
         str(judge_model_path),
         trust_remote_code=True,
-        local_files_only=True,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         use_fast=False,
     )
     tokenizer.padding_side = "left"
@@ -196,7 +196,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         str(judge_model_path),
         trust_remote_code=True,
-        local_files_only=True,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         torch_dtype=dtype,
     ).to(device)
     model.eval()

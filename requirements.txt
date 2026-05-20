@@ -1,10 +1,19 @@
-torch
-transformers>=4.51.0
-datasets
-accelerate
-peft
-scikit-learn
-openai
-matplotlib
-numpy
-tqdm
+# PyTorch should be installed according to your CUDA version:
+# https://pytorch.org/get-started/locally/
+#
+# CPU-only example:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#
+# CUDA 12.1 example:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+transformers>=4.51.0,<5
+datasets>=2.20.0,<4
+accelerate>=0.30.0,<2
+peft>=0.11.0,<1
+scikit-learn>=1.4.0,<2
+openai>=1.30.0,<3
+matplotlib>=3.8.0,<4
+numpy>=1.26.0,<3
+tqdm>=4.66.0,<5
+python-dotenv>=1.0.1,<2

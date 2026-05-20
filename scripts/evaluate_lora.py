@@ -42,26 +42,26 @@ def build_instruction_prompt(text: str, domain: str) -> str:
 
 
 def parse_label(text: str) -> str:
+    """
+    Strict label parser.
+
+    Benchmark-friendly behavior:
+    - Accept only explicit labels: 正面 / 负面 / 中性.
+    - Do not guess with sentiment keywords like 好 / 差 / 喜欢.
+    - If the model does not produce a clean label, mark it as INVALID.
+    """
     s = re.sub(r"\s+", "", text.strip())
-
-    for label in ["正面", "负面", "中性"]:
-        if label in s[:20]:
-            return label
-
-    positive_words = ["积极", "好评", "喜欢", "满意", "推荐", "不错", "好"]
-    negative_words = ["消极", "差评", "不喜欢", "不满意", "失望", "难吃", "差", "踩雷"]
-    neutral_words = ["一般", "普通", "客观", "中立", "还行", "无明显"]
-
     head = s[:30]
-    if any(w in head for w in positive_words):
-        return "正面"
-    if any(w in head for w in negative_words):
-        return "负面"
-    if any(w in head for w in neutral_words):
-        return "中性"
 
-    return "中性"
+    if head in LABEL2ID:
+        return head
 
+    matches = [label for label in ["正面", "负面", "中性"] if label in head]
+
+    if len(matches) == 1:
+        return matches[0]
+
+    return "INVALID"
 
 def load_json(path: Path):
     with path.open("r", encoding="utf-8") as f:
@@ -129,11 +129,11 @@ def predict_batch(model, tokenizer, batch, device, max_new_tokens):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base_model_path", type=str, default="/data/lys/models/Qwen3-8B")
-    parser.add_argument("--lora_path", type=str, default="./models/qwen3-8b-lora-step50")
-    parser.add_argument("--test_file", type=str, default="data/test.json")
-    parser.add_argument("--output_dir", type=str, default="results/lora_step50")
-    parser.add_argument("--device", type=str, default="cuda:0")
+    parser.add_argument("--base_model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
+    parser.add_argument("--lora_path", type=str, default="./models/qwen3-8b-lora-deepseek-hard-step300")
+    parser.add_argument("--test_file", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "test.json"))
+    parser.add_argument("--output_dir", type=str, default="results/deepseek_hard/lora_step300")
+    parser.add_argument("--device", type=str, default="cuda:0" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--batch_size", type=int, default=4)
     parser.add_argument("--max_new_tokens", type=int, default=8)
     return parser.parse_args()
@@ -161,7 +161,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(
         str(base_model_path),
         trust_remote_code=True,
-        local_files_only=True,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         use_fast=False,
     )
     tokenizer.padding_side = "left"
@@ -173,7 +173,7 @@ def main():
     base_model = AutoModelForCausalLM.from_pretrained(
         str(base_model_path),
         trust_remote_code=True,
-        local_files_only=True,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         torch_dtype=dtype,
     ).to(args.device)
 
@@ -192,11 +192,12 @@ def main():
             print(f"[INFO] evaluated {len(predictions)}/{len(test_data)}")
 
     y_true = [LABEL2ID[x["gold"]] for x in predictions]
-    y_pred = [LABEL2ID[x["prediction"]] for x in predictions]
+    y_pred = [LABEL2ID.get(x["prediction"], -1) for x in predictions]
+    invalid_count = sum(1 for x in predictions if x["prediction"] not in LABEL2ID)
 
     acc = accuracy_score(y_true, y_pred)
-    macro_f1 = f1_score(y_true, y_pred, average="macro")
-    weighted_f1 = f1_score(y_true, y_pred, average="weighted")
+    macro_f1 = f1_score(y_true, y_pred, average="macro", labels=[0, 1, 2])
+    weighted_f1 = f1_score(y_true, y_pred, average="weighted", labels=[0, 1, 2])
     cm = confusion_matrix(y_true, y_pred, labels=[0, 1, 2]).tolist()
     report = classification_report(
         y_true,
@@ -233,6 +234,8 @@ def main():
         "classification_report": report,
         "per_domain": per_domain,
         "num_samples": len(predictions),
+        "invalid_count": invalid_count,
+        "invalid_rate": invalid_count / max(1, len(predictions)),
     }
 
     save_json(output_dir / "eval_results.json", results)

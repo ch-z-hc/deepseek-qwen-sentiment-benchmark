@@ -32,9 +32,9 @@ def setup_local_cache(root: Path):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_path", type=str, default="/data/lys/models/Qwen3-8B")
-    parser.add_argument("--train_dataset", type=str, default="data/tokenized_train")
-    parser.add_argument("--eval_dataset", type=str, default="data/tokenized_test")
+    parser.add_argument("--model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
+    parser.add_argument("--train_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "tokenized_train"))
+    parser.add_argument("--eval_dataset", type=str, default=os.path.join(os.environ.get("DATA_DIR", "data_deepseek_hard"), "tokenized_test"))
     parser.add_argument("--output_dir", type=str, default="./models/qwen3-8b-lora")
     parser.add_argument("--num_train_epochs", type=float, default=1.0)
     parser.add_argument("--max_steps", type=int, default=100)
@@ -63,7 +63,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(
         str(model_path),
         trust_remote_code=True,
-        local_files_only=True,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
         use_fast=False,
     )
     if tokenizer.pad_token is None:
@@ -72,8 +72,8 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         str(model_path),
         trust_remote_code=True,
-        local_files_only=True,
-        torch_dtype=torch.float16,
+        local_files_only=os.environ.get("HF_LOCAL_FILES_ONLY", "1") != "0",
+        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
         device_map="auto",
     )
 
@@ -120,12 +120,12 @@ def main():
         eval_strategy="steps",
         eval_steps=args.eval_steps,
         save_total_limit=2,
-        fp16=True,
+        fp16=torch.cuda.is_available(),
         gradient_checkpointing=True,
         optim="adamw_torch",
         report_to=[],
         remove_unused_columns=False,
-        dataloader_num_workers=2,
+        dataloader_num_workers=0,
         seed=args.seed,
     )
 
