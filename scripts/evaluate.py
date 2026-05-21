@@ -5,7 +5,7 @@
 Step 3: Evaluate the fine-tuned sentiment classifier.
 
 Run:
-    python scripts/evaluate.py \
+    python -m scripts.evaluate \
       --model_path ./models/qwen3-8b-finetuned \
       --test_file data/test.json \
       --device cuda:0
@@ -130,6 +130,10 @@ def main():
         torch_dtype=dtype,
     ).to(args.device)
     model.eval()
+    # Suppress warnings about sampling params ignored when do_sample=False
+    for attr in ("temperature", "top_p", "top_k"):
+        if hasattr(model.generation_config, attr):
+            setattr(model.generation_config, attr, None)
 
     test_data = load_json(test_file)
     predictions = []

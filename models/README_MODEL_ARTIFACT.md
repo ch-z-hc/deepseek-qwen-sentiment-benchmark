@@ -37,7 +37,7 @@ mv models/models/qwen3-8b-lora-deepseek-hard-step300 models/
 Using the official release dataset (`data_deepseek_hard`):
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate_lora.py \
+CUDA_VISIBLE_DEVICES=0 python -m scripts.evaluate_lora \
   --base_model_path ./models/Qwen3-8B \
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 \
   --test_file data_deepseek_hard/test.json \

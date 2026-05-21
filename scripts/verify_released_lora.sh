@@ -66,7 +66,7 @@ if [ ! -f "$DATA_DIR/test.json" ]; then
     exit 1
 fi
 
-python scripts/validate_dataset.py --data_dir "$DATA_DIR"
+python -m scripts.validate_dataset --data_dir "$DATA_DIR"
 echo "[OK] Dataset validated"
 
 # -------------------------------------------------------------------
@@ -75,7 +75,7 @@ echo "[OK] Dataset validated"
 echo ""
 echo "[3/5] Tokenizing..."
 
-python scripts/tokenize_deepseek_data.py \
+python -m scripts.tokenize_deepseek_data \
   --model_path "$MODEL_PATH" \
   --data_dir "$DATA_DIR" \
   --max_length 256
@@ -88,7 +88,7 @@ echo "[OK] Tokenization complete"
 echo ""
 echo "[4/5] Evaluating Base Qwen3-8B..."
 
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python scripts/evaluate.py \
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python -m scripts.evaluate \
   --model_path "$MODEL_PATH" \
   --base_tokenizer_path "$MODEL_PATH" \
   --test_file "$DATA_DIR/test.json" \
@@ -121,7 +121,7 @@ if [ ! -f "$_actual_lora_path/adapter_config.json" ]; then
     exit 1
 fi
 
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python scripts/evaluate_lora.py \
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" python -m scripts.evaluate_lora \
   --base_model_path "$MODEL_PATH" \
   --lora_path "$_actual_lora_path" \
   --test_file "$DATA_DIR/test.json" \

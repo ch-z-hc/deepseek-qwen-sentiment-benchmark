@@ -10,7 +10,7 @@ the human/gold sentiment label, then Cohen's Kappa is calculated between:
     - judge_correct: judge says correct / wrong
 
 Run:
-    python scripts/auto_judge.py \
+    python -m scripts.auto_judge \
       --judge_model_path ./models/Qwen3-8B \
       --predictions_file results/predictions.jsonl \
       --device cuda:0
@@ -168,6 +168,10 @@ def main():
         torch_dtype=dtype,
     ).to(device)
     model.eval()
+    # Suppress warnings about sampling params ignored when do_sample=False
+    for attr in ("temperature", "top_p", "top_k"):
+        if hasattr(model.generation_config, attr):
+            setattr(model.generation_config, attr, None)
 
     rows = read_jsonl(pred_file)
     details = []

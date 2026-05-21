@@ -34,6 +34,15 @@ def main():
     print("== Python ==")
     ok("python", sys.version.replace("\n", " "))
 
+    # Check that project root is importable as a package root
+    root = Path.cwd().resolve()
+    if str(root) not in sys.path:
+        warn("PYTHONPATH", f"project root not in sys.path: {root}")
+        print("[HINT] Run: export PYTHONPATH=$PWD:$PYTHONPATH")
+        print("[HINT] Or use: python -m scripts.xxx (recommended)")
+    else:
+        ok("PYTHONPATH", "project root is in sys.path")
+
     print("\n== Packages ==")
     for pkg, import_name in [
         ("torch", "torch"),
@@ -91,7 +100,9 @@ def main():
     if os.environ.get("DEEPSEEK_API_KEY"):
         ok("DEEPSEEK_API_KEY", "set")
     else:
-        warn("DEEPSEEK_API_KEY", "not set; DeepSeek data generation/recheck will fail")
+        print("[INFO] DEEPSEEK_API_KEY not set.")
+        print("[INFO] This is OK if you only verify the released LoRA (no generation/recheck).")
+        warn("DEEPSEEK_API_KEY", "not set; DeepSeek data generation/recheck will fail without it")
 
 if __name__ == "__main__":
     main()

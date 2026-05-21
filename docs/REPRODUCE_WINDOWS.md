@@ -113,13 +113,13 @@ $env:HF_LOCAL_FILES_ONLY="1"
 ## 4. Check environment
 
 ```powershell
-python scripts/check_env.py
+python -m scripts.check_env
 ```
 
 ## 5. Generate tiny smoke-test dataset
 
 ```powershell
-python scripts/generate_deepseek_hard_data.py `
+python -m scripts.generate_deepseek_hard_data `
   --output_dir data/deepseek_hard `
   --model deepseek-v4-flash `
   --train_per_bucket 2 `
@@ -131,13 +131,13 @@ python scripts/generate_deepseek_hard_data.py `
 ## 6. Validate dataset
 
 ```powershell
-python scripts/validate_dataset.py --data_dir data/deepseek_hard
+python -m scripts.validate_dataset --data_dir data/deepseek_hard
 ```
 
 ## 7. Tokenize
 
 ```powershell
-python scripts/tokenize_deepseek_data.py `
+python -m scripts.tokenize_deepseek_data `
   --model_path $env:QWEN3_MODEL_PATH `
   --data_dir data/deepseek_hard `
   --max_length 256
@@ -148,7 +148,7 @@ python scripts/tokenize_deepseek_data.py `
 GPU:
 
 ```powershell
-python scripts/evaluate.py `
+python -m scripts.evaluate `
   --model_path $env:QWEN3_MODEL_PATH `
   --base_tokenizer_path $env:QWEN3_MODEL_PATH `
   --test_file data/deepseek_hard/test.json `
@@ -160,7 +160,7 @@ python scripts/evaluate.py `
 CPU, very slow:
 
 ```powershell
-python scripts/evaluate.py `
+python -m scripts.evaluate `
   --model_path $env:QWEN3_MODEL_PATH `
   --base_tokenizer_path $env:QWEN3_MODEL_PATH `
   --test_file data/deepseek_hard/test.json `
@@ -174,7 +174,7 @@ python scripts/evaluate.py `
 GPU strongly recommended:
 
 ```powershell
-python scripts/train_lora.py `
+python -m scripts.train_lora `
   --model_path $env:QWEN3_MODEL_PATH `
   --train_dataset data/deepseek_hard/tokenized_train `
   --eval_dataset data/deepseek_hard/tokenized_test `
@@ -187,7 +187,7 @@ python scripts/train_lora.py `
 ## 10. Evaluate LoRA
 
 ```powershell
-python scripts/evaluate_lora.py `
+python -m scripts.evaluate_lora `
   --base_model_path $env:QWEN3_MODEL_PATH `
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 `
   --test_file data/deepseek_hard/test.json `
@@ -226,17 +226,17 @@ Then run:
 
 ```powershell
 # Validate dataset
-python scripts/validate_dataset.py --data_dir data_deepseek_hard
+python -m scripts.validate_dataset --data_dir data_deepseek_hard
 
 # Tokenize
-python scripts/tokenize_deepseek_data.py `
+python -m scripts.tokenize_deepseek_data `
   --model_path $env:QWEN3_MODEL_PATH `
   --data_dir data_deepseek_hard `
   --max_length 256
 
 # Evaluate Base Qwen3-8B
 $env:CUDA_VISIBLE_DEVICES="0"
-python scripts/evaluate.py `
+python -m scripts.evaluate `
   --model_path $env:QWEN3_MODEL_PATH `
   --base_tokenizer_path $env:QWEN3_MODEL_PATH `
   --test_file data_deepseek_hard/test.json `
@@ -245,7 +245,7 @@ python scripts/evaluate.py `
   --batch_size 4
 
 # Evaluate LoRA
-python scripts/evaluate_lora.py `
+python -m scripts.evaluate_lora `
   --base_model_path $env:QWEN3_MODEL_PATH `
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 `
   --test_file data_deepseek_hard/test.json `

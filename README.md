@@ -24,6 +24,18 @@ DeepSeek-hard test set: 1,440 samples across 8 domains.
 
 ## Quick Start
 
+> **Important:** All commands must be run from the project root directory.
+>
+> ```bash
+> cd deepseek-qwen-sentiment-benchmark
+> ```
+>
+> Commands use `python -m scripts.xxx` syntax. If you prefer running scripts by file path, set:
+>
+> ```bash
+> export PYTHONPATH="$PWD:$PYTHONPATH"
+> ```
+
 ### 1. Setup Environment
 
 ```bash
@@ -127,7 +139,7 @@ export HF_LOCAL_FILES_ONLY="1"
 ### 4. Verify Environment
 
 ```bash
-python scripts/check_env.py
+python -m scripts.check_env
 ```
 
 ## Reproduce Full Pipeline
@@ -135,7 +147,7 @@ python scripts/check_env.py
 ### 1. Generate DeepSeek Hard Set
 
 ```bash
-python scripts/generate_deepseek_hard_data.py \
+python -m scripts.generate_deepseek_hard_data \
   --output_dir data/deepseek_hard \
   --model deepseek-v4-flash \
   --train_per_bucket 200 \
@@ -145,13 +157,13 @@ python scripts/generate_deepseek_hard_data.py \
 ### 2. Validate Dataset
 
 ```bash
-python scripts/validate_dataset.py --data_dir data/deepseek_hard
+python -m scripts.validate_dataset --data_dir data/deepseek_hard
 ```
 
 ### 3. Tokenize
 
 ```bash
-python scripts/tokenize_deepseek_data.py \
+python -m scripts.tokenize_deepseek_data \
   --model_path $QWEN3_MODEL_PATH \
   --data_dir data/deepseek_hard \
   --max_length 256
@@ -160,7 +172,7 @@ python scripts/tokenize_deepseek_data.py \
 ### 4. Evaluate Base Qwen3-8B
 
 ```bash
-python scripts/evaluate.py \
+python -m scripts.evaluate \
   --model_path $QWEN3_MODEL_PATH \
   --base_tokenizer_path $QWEN3_MODEL_PATH \
   --test_file data/deepseek_hard/test.json \
@@ -172,7 +184,7 @@ python scripts/evaluate.py \
 ### 5. DeepSeek-v4-pro External Recheck
 
 ```bash
-python scripts/evaluate_deepseek_classifier.py \
+python -m scripts.evaluate_deepseek_classifier \
   --test_file data/deepseek_hard/test.json \
   --output_dir results/deepseek_hard/deepseek_classifier_pro \
   --model deepseek-v4-pro \
@@ -182,7 +194,7 @@ python scripts/evaluate_deepseek_classifier.py \
 ### 6. Train Qwen3-LoRA
 
 ```bash
-python scripts/train_lora.py \
+python -m scripts.train_lora \
   --model_path $QWEN3_MODEL_PATH \
   --train_dataset data/deepseek_hard/tokenized_train \
   --eval_dataset data/deepseek_hard/tokenized_test \
@@ -195,7 +207,7 @@ python scripts/train_lora.py \
 ### 7. Evaluate Qwen3-LoRA
 
 ```bash
-python scripts/evaluate_lora.py \
+python -m scripts.evaluate_lora \
   --base_model_path $QWEN3_MODEL_PATH \
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 \
   --test_file data/deepseek_hard/test.json \
@@ -261,16 +273,16 @@ Then run:
 
 ```bash
 # 1. Validate the official dataset
-python scripts/validate_dataset.py --data_dir data_deepseek_hard
+python -m scripts.validate_dataset --data_dir data_deepseek_hard
 
 # 2. Tokenize
-python scripts/tokenize_deepseek_data.py \
+python -m scripts.tokenize_deepseek_data \
   --model_path $QWEN3_MODEL_PATH \
   --data_dir data_deepseek_hard \
   --max_length 256
 
 # 3. Evaluate Base Qwen3-8B
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py \
+CUDA_VISIBLE_DEVICES=0 python -m scripts.evaluate \
   --model_path $QWEN3_MODEL_PATH \
   --base_tokenizer_path $QWEN3_MODEL_PATH \
   --test_file data_deepseek_hard/test.json \
@@ -279,7 +291,7 @@ CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py \
   --batch_size 4
 
 # 4. Evaluate LoRA adapter
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate_lora.py \
+CUDA_VISIBLE_DEVICES=0 python -m scripts.evaluate_lora \
   --base_model_path $QWEN3_MODEL_PATH \
   --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 \
   --test_file data_deepseek_hard/test.json \

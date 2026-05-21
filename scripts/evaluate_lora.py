@@ -122,6 +122,10 @@ def main():
     print(f"[INFO] Loading LoRA adapter from {lora_path}")
     model = PeftModel.from_pretrained(base_model, str(lora_path))
     model.eval()
+    # Suppress warnings about sampling params ignored when do_sample=False
+    for attr in ("temperature", "top_p", "top_k"):
+        if hasattr(model.generation_config, attr):
+            setattr(model.generation_config, attr, None)
 
     test_data = load_json(test_file)
     predictions = []
