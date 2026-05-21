@@ -102,6 +102,7 @@ git clone https://hf-mirror.com/Qwen/Qwen3-8B ./models/Qwen3-8B
 cp .env.example .env
 # Edit .env with your settings:
 #   DEEPSEEK_API_KEY=your_key
+#   DEEPSEEK_BASE_URL=https://api.deepseek.com   # optional, for custom endpoints
 #   QWEN3_MODEL_PATH=./models/Qwen3-8B
 #   DATA_DIR=data/deepseek_hard           # full reproduction
 #   DATA_DIR=data_deepseek_hard           # verify released LoRA only
@@ -326,19 +327,20 @@ If your LoRA accuracy is near 98.6% and Base is around 62%, the reproduction is 
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── configs/                  # Label schema & config docs
-├── docs/                     # Experiment results, reproduction guides
+├── configs/                  # Label schema documentation
+├── docs/                     # OS-specific reproduction guides
 ├── scripts/
-│   ├── generate_deepseek_hard_data.py   # Step 1: Generate hard set via DeepSeek
-│   ├── validate_dataset.py              # Step 1b: Validate dataset integrity
-│   ├── tokenize_deepseek_data.py        # Step 2: Tokenize for Qwen3
-│   ├── evaluate.py                      # Step 3: Evaluate base model
-│   ├── evaluate_deepseek_classifier.py  # Step 4: DeepSeek external recheck
-│   ├── evaluate_lora.py                 # Step 5: Evaluate LoRA adapter
-│   ├── train_lora.py                    # Step 6: LoRA fine-tuning
-│   ├── verify_released_lora.sh          # One-click released LoRA verification
+│   ├── generate_deepseek_hard_data.py   # Data generation via DeepSeek
+│   ├── validate_dataset.py              # Dataset integrity check
+│   ├── tokenize_deepseek_data.py        # Tokenization
+│   ├── evaluate.py                      # Evaluate base model
+│   ├── evaluate_deepseek_classifier.py  # DeepSeek external recheck
+│   ├── train_lora.py                    # LoRA fine-tuning
+│   ├── evaluate_lora.py                 # Evaluate LoRA adapter
 │   ├── auto_judge.py                    # LLM-as-Judge scoring
-│   └── check_env.py                     # Environment validation
+│   ├── check_env.py                     # Environment validation
+│   ├── verify_released_lora.sh          # One-click verification
+│   └── utils.py                         # Shared utilities
 ├── data/
 │   └── deepseek_hard/        # Generated datasets (train/test/seed.json)
 ├── data_deepseek_hard/       # Official release dataset (from GitHub Release)
