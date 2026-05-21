@@ -10,7 +10,10 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
+import httpx
 from openai import OpenAI
+
+from scripts.utils import extract_json_array, save_json
 
 DOMAINS = [
     "美食", "旅行", "购物", "娱乐",
@@ -36,25 +39,6 @@ def valid_text(x: str) -> bool:
     if any(b in x for b in bad):
         return False
     return True
-
-
-def extract_json_array(text: str):
-    text = text.strip()
-    text = re.sub(r"^```json\s*", "", text)
-    text = re.sub(r"^```\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-    try:
-        obj = json.loads(text)
-        if isinstance(obj, list):
-            return obj
-        if isinstance(obj, dict) and isinstance(obj.get("data"), list):
-            return obj["data"]
-    except Exception:
-        pass
-    m = re.search(r"\[.*\]", text, flags=re.S)
-    if m:
-        return json.loads(m.group(0))
-    raise ValueError("Cannot parse JSON array")
 
 
 def build_prompt(domain: str, sentiment: str, n: int, split: str) -> List[Dict]:
@@ -148,12 +132,6 @@ def call_deepseek(client, model: str, messages: List[Dict], max_retries=5):
     raise RuntimeError(last)
 
 
-def save_json(path: Path, obj):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
-
-
 def generate_split(client, args, split: str, per_bucket: int):
     rows = []
     seen = set()
@@ -230,7 +208,11 @@ def main():
     if not key:
         raise RuntimeError("请先 export DEEPSEEK_API_KEY")
 
-    client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
+    client = OpenAI(
+        api_key=key,
+        base_url=os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        timeout=httpx.Timeout(600.0, connect=60.0),
+    )
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 

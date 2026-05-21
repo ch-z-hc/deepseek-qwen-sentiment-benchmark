@@ -15,85 +15,27 @@ import argparse
 import gc
 import json
 import os
-import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
 import torch
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-
-LABELS = ["负面", "中性", "正面"]
-LABEL2ID = {"负面": 0, "中性": 1, "正面": 2}
-
-
-def project_root() -> Path:
-    return Path(os.environ.get("PROJECT_ROOT", Path.cwd())).resolve()
-
-
-def setup_local_cache(root: Path) -> None:
-    cache_root = root / ".cache"
-    os.environ.setdefault("HF_HOME", str(cache_root / "hf_home"))
-    os.environ.setdefault("HF_DATASETS_CACHE", str(cache_root / "hf_datasets"))
-    os.environ.setdefault("TRANSFORMERS_CACHE", str(cache_root / "transformers"))
-    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-
-
-def build_instruction_prompt(text: str, domain: str) -> str:
-    return (
-        "你是一个中文短评论情感分析助手。"
-        "请判断下面评论的情感，只能输出三个标签之一：正面、负面、中性。\n"
-        f"领域：{domain}\n"
-        f"评论：{text}\n"
-        "情感："
-    )
-
-
-def parse_label(text: str) -> str:
-    """
-    Strict label parser.
-
-    Benchmark-friendly behavior:
-    - Accept only explicit labels: 正面 / 负面 / 中性.
-    - Do not guess with sentiment keywords like 好 / 差 / 喜欢.
-    - If the model does not produce a clean label, mark it as INVALID.
-    """
-    s = re.sub(r"\s+", "", text.strip())
-    head = s[:30]
-
-    if head in LABEL2ID:
-        return head
-
-    matches = [label for label in ["正面", "负面", "中性"] if label in head]
-
-    if len(matches) == 1:
-        return matches[0]
-
-    return "INVALID"
-
-def load_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_json(path: Path, obj) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
-
-
-def append_jsonl(path: Path, rows: List[Dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
-def batched(items: List[Dict], batch_size: int):
-    for i in range(0, len(items), batch_size):
-        yield items[i : i + batch_size]
+from scripts.utils import (
+    LABEL2ID,
+    LABELS,
+    batched,
+    build_instruction_prompt,
+    load_json,
+    parse_label,
+    project_root,
+    save_json,
+    setup_local_cache,
+    write_jsonl,
+)
 
 
 @torch.inference_mode()
@@ -129,7 +71,7 @@ def predict_batch(model, tokenizer, batch: List[Dict], device: str, max_new_toke
                 "text": item["text"],
                 "domain": item["domain"],
                 "gold": gold,
-                "prediction": pred,
+                "prediction": pred or "INVALID",
                 "raw_output": raw.strip(),
                 "correct": int(pred == gold),
             }
@@ -191,12 +133,11 @@ def main():
 
     test_data = load_json(test_file)
     predictions = []
-    for idx, batch in enumerate(batched(test_data, args.batch_size), start=1):
+    for batch in tqdm(batched(test_data, args.batch_size), desc="Evaluating",
+                      total=(len(test_data) + args.batch_size - 1) // args.batch_size):
         predictions.extend(
             predict_batch(model, tokenizer, batch, args.device, args.max_new_tokens)
         )
-        if idx % 10 == 0:
-            print(f"[INFO] evaluated {len(predictions)}/{len(test_data)}")
 
     y_true = [LABEL2ID[x["gold"]] for x in predictions]
     y_pred = [LABEL2ID.get(x["prediction"], -1) for x in predictions]
@@ -244,7 +185,7 @@ def main():
     }
 
     save_json(output_dir / "eval_results.json", results)
-    append_jsonl(output_dir / "predictions.jsonl", predictions)
+    write_jsonl(output_dir / "predictions.jsonl", predictions)
 
     print(json.dumps(results, ensure_ascii=False, indent=2))
 

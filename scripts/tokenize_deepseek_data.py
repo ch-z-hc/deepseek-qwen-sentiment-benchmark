@@ -2,35 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import json
 import os
 from pathlib import Path
 
 from datasets import Dataset
 from transformers import AutoTokenizer
 
-
-def setup_local_cache(root: Path):
-    cache_root = root / ".cache"
-    os.environ.setdefault("HF_HOME", str(cache_root / "hf_home"))
-    os.environ.setdefault("HF_DATASETS_CACHE", str(cache_root / "hf_datasets"))
-    os.environ.setdefault("TRANSFORMERS_CACHE", str(cache_root / "transformers"))
-    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-
-
-def load_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def build_instruction_prompt(text: str, domain: str) -> str:
-    return (
-        "你是一个中文短评论情感分析助手。"
-        "请判断下面评论的情感，只能输出三个标签之一：正面、负面、中性。\n"
-        f"领域：{domain}\n"
-        f"评论：{text}\n"
-        "情感："
-    )
+from scripts.utils import (
+    build_instruction_prompt,
+    load_json,
+    project_root,
+    setup_local_cache,
+)
 
 
 def to_supervised_example(example, tokenizer, max_length: int):
@@ -72,7 +55,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    root = Path.cwd()
+    root = project_root()
     setup_local_cache(root)
 
     data_dir = Path(args.data_dir)

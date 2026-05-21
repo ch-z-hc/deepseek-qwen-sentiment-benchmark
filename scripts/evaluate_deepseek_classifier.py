@@ -10,42 +10,22 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
+import httpx
 from openai import OpenAI
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
+from tqdm import tqdm
 
-
-LABELS = ["负面", "中性", "正面"]
-LABEL2ID = {"负面": 0, "中性": 1, "正面": 2}
-
-
-def read_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def read_jsonl(path: Path):
-    rows = []
-    if not path.exists():
-        return rows
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                rows.append(json.loads(line))
-    return rows
-
-
-def append_jsonl(path: Path, rows: List[Dict]):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
-def write_json(path: Path, obj):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
+from scripts.utils import (
+    LABEL2ID,
+    LABELS,
+    append_jsonl,
+    batched,
+    extract_json_array,
+    load_json,
+    project_root,
+    read_jsonl,
+    save_json,
+)
 
 
 def normalize_label(x: str):
@@ -57,28 +37,6 @@ def normalize_label(x: str):
     if "中性" in s or "中立" in s or "客观" in s:
         return "中性"
     return None
-
-
-def extract_json_array(text: str):
-    text = text.strip()
-    text = re.sub(r"^```json\s*", "", text)
-    text = re.sub(r"^```\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-
-    try:
-        obj = json.loads(text)
-        if isinstance(obj, list):
-            return obj
-        if isinstance(obj, dict) and isinstance(obj.get("data"), list):
-            return obj["data"]
-    except Exception:
-        pass
-
-    m = re.search(r"\[.*\]", text, flags=re.S)
-    if m:
-        return json.loads(m.group(0))
-
-    raise ValueError(f"Cannot parse JSON array from: {text[:500]}")
 
 
 def build_messages(batch: List[Dict]):
@@ -127,11 +85,12 @@ def build_messages(batch: List[Dict]):
 
 
 def call_deepseek(client, model: str, messages: List[Dict], max_retries: int = 5):
+    use_extra = model in {"deepseek-v4-flash", "deepseek-v4-pro"}
     last_err = None
     for attempt in range(max_retries):
         try:
             kwargs = {}
-            if model in {"deepseek-v4-flash", "deepseek-v4-pro"}:
+            if use_extra:
                 kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
 
             resp = client.chat.completions.create(
@@ -147,34 +106,16 @@ def call_deepseek(client, model: str, messages: List[Dict], max_retries: int = 5
             return extract_json_array(content)
 
         except Exception as e:
-            # Some endpoints may not accept extra_body; retry without it.
-            if attempt == 0:
-                try:
-                    resp = client.chat.completions.create(
-                        model=model,
-                        messages=messages,
-                        temperature=0,
-                        top_p=1,
-                        max_tokens=2048,
-                        stream=False,
-                    )
-                    content = resp.choices[0].message.content
-                    return extract_json_array(content)
-                except Exception as e2:
-                    last_err = e2
-            else:
-                last_err = e
+            last_err = e
+            # If extra_body caused the failure, disable it for subsequent retries
+            if use_extra and "extra_body" in str(e).lower():
+                use_extra = False
 
             wait = min(2 ** attempt, 30)
             print(f"[WARN] DeepSeek call failed: {last_err}; retry in {wait}s")
             time.sleep(wait)
 
     raise RuntimeError(f"DeepSeek failed after retries: {last_err}")
-
-
-def batched(items, batch_size):
-    for i in range(0, len(items), batch_size):
-        yield items[i:i + batch_size]
 
 
 def parse_args():
@@ -214,13 +155,16 @@ def main():
 
     client = OpenAI(
         api_key=key,
-        base_url="https://api.deepseek.com",
+        base_url=os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        timeout=httpx.Timeout(600.0, connect=60.0),
     )
 
     remain = [x for x in data if x["id"] not in done_ids]
     print(f"[INFO] total={len(data)}, done={len(done_ids)}, remain={len(remain)}")
 
-    for idx, batch in enumerate(batched(remain, args.batch_size), start=1):
+    total_batches = (len(remain) + args.batch_size - 1) // args.batch_size
+    for batch in tqdm(batched(remain, args.batch_size), desc="DeepSeek classify",
+                      total=total_batches):
         arr = call_deepseek(client, args.model, build_messages(batch))
 
         pred_by_id = {}
@@ -234,7 +178,7 @@ def main():
         for x in batch:
             pred = pred_by_id.get(x["id"])
             if pred is None:
-                pred = "中性"
+                pred = "UNKNOWN"
 
             gold = x["label"]
             out_rows.append({
@@ -248,10 +192,6 @@ def main():
             })
 
         append_jsonl(pred_file, out_rows)
-
-        if idx % 5 == 0:
-            print(f"[INFO] annotated {min(idx * args.batch_size, len(remain))}/{len(remain)} newly")
-
         time.sleep(args.sleep)
 
     rows = read_jsonl(pred_file)
@@ -259,8 +199,11 @@ def main():
     valid_ids = {x["id"] for x in data}
     rows = [x for x in rows if x["id"] in valid_ids]
 
+    # Track unknown predictions
+    unknown_count = sum(1 for x in rows if x["prediction"] == "UNKNOWN")
+
     y_true = [LABEL2ID[x["gold"]] for x in rows]
-    y_pred = [LABEL2ID[x["prediction"]] for x in rows]
+    y_pred = [LABEL2ID.get(x["prediction"], -1) for x in rows]
 
     acc = accuracy_score(y_true, y_pred)
     macro_f1 = f1_score(y_true, y_pred, average="macro")
@@ -294,6 +237,7 @@ def main():
         "model": args.model,
         "test_file": str(test_file),
         "num_samples": len(rows),
+        "unknown_count": unknown_count,
         "accuracy": acc,
         "macro_f1": macro_f1,
         "weighted_f1": weighted_f1,
@@ -303,7 +247,7 @@ def main():
         "per_domain": per_domain,
     }
 
-    write_json(result_file, results)
+    save_json(result_file, results)
     print(json.dumps(results, ensure_ascii=False, indent=2))
 
 

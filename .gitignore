@@ -28,8 +28,22 @@ checkpoints/
 **/tokenized_train/
 **/tokenized_test/
 
+# Official release data (not regenerated)
+data_deepseek_hard/
+
 # Resume (do not publish)
 resume_chzhc.tex
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python packaging
+*.egg-info/
+dist/
+build/
 
 # OS
 .DS_Store

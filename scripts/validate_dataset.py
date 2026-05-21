@@ -6,12 +6,10 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from scripts.utils import load_json
+
 REQUIRED_FIELDS = {"text", "domain", "label"}
 ALLOWED_LABELS = {"负面", "中性", "正面"}
-
-def load_json(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
 
 def validate_file(path: Path):
     data = load_json(path)

@@ -16,18 +16,7 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, TaskType
 
-
-def project_root() -> Path:
-    return Path(os.environ.get("PROJECT_ROOT", Path.cwd())).resolve()
-
-
-def setup_local_cache(root: Path):
-    cache_root = root / ".cache"
-    os.environ.setdefault("HF_HOME", str(cache_root / "hf_home"))
-    os.environ.setdefault("HF_DATASETS_CACHE", str(cache_root / "hf_datasets"))
-    os.environ.setdefault("TRANSFORMERS_CACHE", str(cache_root / "transformers"))
-    os.environ.setdefault("WANDB_DIR", str(root / "wandb"))
-    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+from scripts.utils import project_root, setup_local_cache
 
 
 def parse_args():
@@ -46,6 +35,8 @@ def parse_args():
     parser.add_argument("--save_steps", type=int, default=20)
     parser.add_argument("--eval_steps", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--resume_from_checkpoint", type=str, default=None,
+                        help="Path to checkpoint directory to resume training from")
     return parser.parse_args()
 
 
@@ -138,7 +129,7 @@ def main():
         data_collator=default_data_collator,
     )
 
-    trainer.train()
+    trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
 
     trainer.save_model(str(output_dir))
     tokenizer.save_pretrained(str(output_dir))

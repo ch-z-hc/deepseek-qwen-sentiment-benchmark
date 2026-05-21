@@ -26,42 +26,17 @@ from typing import Dict, List
 
 import torch
 from sklearn.metrics import accuracy_score, cohen_kappa_score
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-
-def project_root() -> Path:
-    return Path(os.environ.get("PROJECT_ROOT", Path.cwd())).resolve()
-
-
-def setup_local_cache(root: Path) -> None:
-    cache_root = root / ".cache"
-    os.environ.setdefault("HF_HOME", str(cache_root / "hf_home"))
-    os.environ.setdefault("HF_DATASETS_CACHE", str(cache_root / "hf_datasets"))
-    os.environ.setdefault("TRANSFORMERS_CACHE", str(cache_root / "transformers"))
-    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-
-
-def read_jsonl(path: Path) -> List[Dict]:
-    rows = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                rows.append(json.loads(line))
-    return rows
-
-
-def write_json(path: Path, obj) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
-
-
-def write_jsonl(path: Path, rows: List[Dict]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+from scripts.utils import (
+    batched,
+    project_root,
+    read_jsonl,
+    save_json,
+    setup_local_cache,
+    write_jsonl,
+)
 
 
 def build_judge_prompt(row: Dict) -> str:
@@ -88,11 +63,6 @@ def parse_judge_output(text: str) -> int:
         return 0
     # Fallback: exact label agreement is a conservative default.
     return -1
-
-
-def batched(items: List[Dict], batch_size: int):
-    for i in range(0, len(items), batch_size):
-        yield items[i : i + batch_size]
 
 
 @torch.inference_mode()
@@ -122,14 +92,12 @@ def judge_batch(model, tokenizer, batch: List[Dict], device: str, max_new_tokens
     for row, raw in zip(batch, outputs):
         human_correct = int(row.get("prediction") == row.get("gold"))
         judge_correct = parse_judge_output(raw)
-        if judge_correct == -1:
-            judge_correct = human_correct
-
+        # Mark unparseable as None so they are excluded from Kappa
         judged.append(
             {
                 **row,
                 "human_correct": human_correct,
-                "judge_correct": int(judge_correct),
+                "judge_correct": None if judge_correct == -1 else int(judge_correct),
                 "judge_raw_output": raw.strip(),
             }
         )
@@ -141,7 +109,7 @@ def parse_args():
     parser.add_argument("--judge_model_path", type=str, default=os.environ.get("QWEN3_MODEL_PATH", "./models/Qwen3-8B"))
     parser.add_argument("--predictions_file", type=str, default="results/predictions.jsonl")
     parser.add_argument("--output_dir", type=str, default="results")
-    parser.add_argument("--device", type=str, default="cuda:4")
+    parser.add_argument("--device", type=str, default="cuda:0" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--max_new_tokens", type=int, default=6)
     parser.add_argument("--allow_fallback_device", action="store_true")
@@ -203,26 +171,30 @@ def main():
 
     rows = read_jsonl(pred_file)
     details = []
-    for idx, batch in enumerate(batched(rows, args.batch_size), start=1):
+    for batch in tqdm(batched(rows, args.batch_size), desc="Judging",
+                      total=(len(rows) + args.batch_size - 1) // args.batch_size):
         details.extend(judge_batch(model, tokenizer, batch, device, args.max_new_tokens))
-        if idx % 10 == 0:
-            print(f"[INFO] judged {len(details)}/{len(rows)}")
 
-    human = [x["human_correct"] for x in details]
-    judge = [x["judge_correct"] for x in details]
+    # Exclude unparseable judge outputs from Kappa calculation
+    valid = [x for x in details if x["judge_correct"] is not None]
+    num_unparseable = len(details) - len(valid)
+
+    human = [x["human_correct"] for x in valid]
+    judge = [x["judge_correct"] for x in valid]
 
     kappa = cohen_kappa_score(human, judge)
     judge_acc_against_human = accuracy_score(human, judge)
 
     result = {
         "num_samples": len(details),
+        "num_unparseable": num_unparseable,
         "cohen_kappa": kappa,
         "judge_accuracy_against_human_correctness": judge_acc_against_human,
         "human_correct_rate": sum(human) / max(1, len(human)),
         "judge_correct_rate": sum(judge) / max(1, len(judge)),
     }
 
-    write_json(output_dir / "judge_results.json", result)
+    save_json(output_dir / "judge_results.json", result)
     write_jsonl(output_dir / "judge_details.jsonl", details)
 
     print(json.dumps(result, ensure_ascii=False, indent=2))

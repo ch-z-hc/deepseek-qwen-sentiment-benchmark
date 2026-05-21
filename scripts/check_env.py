@@ -43,7 +43,7 @@ def main():
         ("peft", "peft"),
         ("scikit-learn", "sklearn"),
         ("openai", "openai"),
-        ("matplotlib", "matplotlib"),
+        ("httpx", "httpx"),
         ("numpy", "numpy"),
         ("tqdm", "tqdm"),
         ("python-dotenv", "dotenv"),
