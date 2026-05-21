@@ -8,24 +8,45 @@ conda activate dsqwen
 python -m pip install --upgrade pip
 ```
 
-Install PyTorch according to your CUDA version from the official PyTorch selector.
-
-CPU-only example:
-
-```powershell
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-```
-
-CUDA 12.1 example:
-
-```powershell
-pip install torch --index-url https://download.pytorch.org/whl/cu121
-```
-
-Then install project dependencies:
+**Step 1:** Install non-PyTorch dependencies first (requirements.txt does NOT include torch):
 
 ```powershell
 pip install -r requirements.txt
+```
+
+**Step 2:** Install PyTorch according to your CUDA version. Check your driver first:
+
+```powershell
+nvidia-smi
+```
+
+Then install the matching PyTorch:
+
+```powershell
+# CPU-only:
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# CUDA 12.1:
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+# CUDA 12.6:
+pip install torch --index-url https://download.pytorch.org/whl/cu126
+```
+
+### CUDA Compatibility Check
+
+If you see `torch.cuda.is_available() == False` or `The NVIDIA driver on your system is too old`:
+
+```powershell
+nvidia-smi
+python -c "import torch; print('torch:', torch.__version__); print('torch cuda:', torch.version.cuda); print('cuda available:', torch.cuda.is_available())"
+```
+
+If CUDA is unavailable, reinstall:
+
+```powershell
+pip uninstall -y torch torchvision torchaudio triton
+pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 ```
 
 ## 2. Download Qwen3-8B
@@ -70,7 +91,10 @@ Set:
 ```text
 DEEPSEEK_API_KEY=your_key
 QWEN3_MODEL_PATH=D:\models\Qwen3-8B
+# For full reproduction (generate data via DeepSeek):
 DATA_DIR=data/deepseek_hard
+# Or for verifying released LoRA only:
+DATA_DIR=data_deepseek_hard
 HF_LOCAL_FILES_ONLY=1
 ```
 
@@ -79,7 +103,10 @@ For current PowerShell session:
 ```powershell
 $env:DEEPSEEK_API_KEY="your_key"
 $env:QWEN3_MODEL_PATH="D:\models\Qwen3-8B"
+# For full reproduction:
 $env:DATA_DIR="data/deepseek_hard"
+# Or for verifying released LoRA only:
+$env:DATA_DIR="data_deepseek_hard"
 $env:HF_LOCAL_FILES_ONLY="1"
 ```
 
@@ -168,3 +195,65 @@ python scripts/evaluate_lora.py `
   --device cuda:0 `
   --batch_size 2
 ```
+
+## Verify Released LoRA (No Data Generation/Training)
+
+If you only want to verify the released LoRA adapter works, download from the [Release page](https://github.com/ch-z-hc/deepseek-qwen-sentiment-benchmark/releases/tag/v1.0):
+
+```powershell
+# Download and extract the official dataset
+tar -xzf deepseek_hard_dataset_json.tar.gz
+# → creates data_deepseek_hard/
+
+# Download and extract the LoRA adapter
+# Check internal structure first:
+tar -tzf qwen3-8b-lora-deepseek-hard-step300.tar.gz
+# If it has models/ prefix, extract to project root:
+tar -xzf qwen3-8b-lora-deepseek-hard-step300.tar.gz
+# If not, extract into ./models:
+mkdir models -Force
+tar -xzf qwen3-8b-lora-deepseek-hard-step300.tar.gz -C ./models
+```
+
+Set environment:
+
+```powershell
+$env:QWEN3_MODEL_PATH="D:\models\Qwen3-8B"
+$env:DATA_DIR="data_deepseek_hard"
+```
+
+Then run:
+
+```powershell
+# Validate dataset
+python scripts/validate_dataset.py --data_dir data_deepseek_hard
+
+# Tokenize
+python scripts/tokenize_deepseek_data.py `
+  --model_path $env:QWEN3_MODEL_PATH `
+  --data_dir data_deepseek_hard `
+  --max_length 256
+
+# Evaluate Base Qwen3-8B
+$env:CUDA_VISIBLE_DEVICES="0"
+python scripts/evaluate.py `
+  --model_path $env:QWEN3_MODEL_PATH `
+  --base_tokenizer_path $env:QWEN3_MODEL_PATH `
+  --test_file data_deepseek_hard/test.json `
+  --output_dir results/deepseek_hard/base_qwen3_official_verify `
+  --device cuda:0 `
+  --batch_size 4
+
+# Evaluate LoRA
+python scripts/evaluate_lora.py `
+  --base_model_path $env:QWEN3_MODEL_PATH `
+  --lora_path ./models/qwen3-8b-lora-deepseek-hard-step300 `
+  --test_file data_deepseek_hard/test.json `
+  --output_dir results/deepseek_hard/lora_step300_official_verify `
+  --device cuda:0 `
+  --batch_size 4
+```
+
+**Expected results:**
+- Base Qwen3-8B: ~62% accuracy
+- Qwen3-8B + LoRA: ~98.6% accuracy, invalid_count = 0
