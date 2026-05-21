@@ -1,10 +1,14 @@
-# IMPORTANT: This file does NOT include torch/torchvision/torchaudio.
-# PyTorch must be installed separately according to your CUDA/driver version.
-# Install this file first, then install PyTorch:
+# IMPORTANT: Do NOT install this file before PyTorch.
+# peft depends on torch>=1.13.0, so pip will auto-install the latest torch
+# wheel (e.g. cu130) which may exceed your NVIDIA driver's CUDA support.
 #
-#   pip install -r requirements.txt
-#   nvidia-smi   # check your driver
-#   pip install torch --index-url https://download.pytorch.org/whl/cu126  # or cpu/cu121/cu124
+# Install PyTorch FIRST with a pinned version, then use constraints:
+#
+#   pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
+#   cat > constraints-cu126.txt <<'EOF'
+#   torch==2.7.0
+#   EOF
+#   pip install -r requirements.txt -c constraints-cu126.txt
 #
 # https://pytorch.org/get-started/locally/
 

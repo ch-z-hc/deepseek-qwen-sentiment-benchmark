@@ -8,29 +8,41 @@ conda activate dsqwen
 python -m pip install --upgrade pip
 ```
 
-**Step 1:** Install non-PyTorch dependencies first (requirements.txt does NOT include torch):
-
-```powershell
-pip install -r requirements.txt
-```
-
-**Step 2:** Install PyTorch according to your CUDA version. Check your driver first:
+**Step 1:** Install PyTorch FIRST (before requirements.txt). Check your driver first:
 
 ```powershell
 nvidia-smi
 ```
 
-Then install the matching PyTorch:
+Then install the matching PyTorch with a pinned version:
 
 ```powershell
 # CPU-only:
-pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cpu
 
 # CUDA 12.1:
-pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu121
 
 # CUDA 12.6:
-pip install torch --index-url https://download.pytorch.org/whl/cu126
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
+```
+
+**Step 2:** Pin torch so transitive dependencies (peft → torch) don't upgrade it, then install requirements:
+
+```powershell
+@"
+torch==2.7.0
+"@ | Out-File -FilePath constraints-cu126.txt -Encoding ascii
+
+pip install -r requirements.txt -c constraints-cu126.txt
+```
+
+> **Why PyTorch first?** `peft` (in requirements.txt) depends on `torch>=1.13.0`. If you install requirements.txt first, pip auto-installs the latest torch wheel (e.g. cu130), which may exceed your NVIDIA driver's CUDA support. Installing torch first with a pinned version + constraints prevents this.
+
+**Step 3:** Verify CUDA is working:
+
+```powershell
+python -c "import torch; print('torch:', torch.__version__); print('torch cuda:', torch.version.cuda); print('cuda available:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
 ```
 
 ### CUDA Compatibility Check
@@ -46,7 +58,7 @@ If CUDA is unavailable, reinstall:
 
 ```powershell
 pip uninstall -y torch torchvision torchaudio triton
-pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
 ```
 
 ## 2. Download Qwen3-8B

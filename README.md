@@ -42,29 +42,48 @@ DeepSeek-hard test set: 1,440 samples across 8 domains.
 conda create -n dsqwen python=3.10 -y
 conda activate dsqwen
 
-# Step 1: Install non-PyTorch dependencies first
-# (requirements.txt does NOT include torch — install it separately below)
-pip install -r requirements.txt
+pip install -U pip
 
-# Step 2: Install PyTorch according to YOUR CUDA/driver version
-# Check your CUDA version first:
+# Step 1: Install PyTorch FIRST (before requirements.txt).
+# Check your NVIDIA driver CUDA support first:
 nvidia-smi
 
+# Pick the CUDA wheel that matches your driver:
 # CPU-only:
-pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cpu
 # CUDA 12.1:
-pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu121
+# CUDA 12.4:
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu124
 # CUDA 12.6:
-pip install torch --index-url https://download.pytorch.org/whl/cu126
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
+
+# Step 2: Pin torch so transitive deps (peft → torch) don't upgrade it.
+cat > constraints-cu126.txt <<'EOF'
+torch==2.7.0
+EOF
+
+pip install -r requirements.txt -c constraints-cu126.txt
+
+# Step 3: Verify CUDA is working.
+python - <<'PY'
+import torch
+print("torch:", torch.__version__)
+print("torch cuda:", torch.version.cuda)
+print("cuda available:", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print(torch.cuda.get_device_name(0))
+PY
 ```
+
+> **Why PyTorch first?** `peft` (in requirements.txt) depends on `torch>=1.13.0`. If you install requirements.txt first, pip will auto-install the *latest* torch wheel (e.g. cu130), which may exceed your NVIDIA driver's CUDA support. Installing torch first with a pinned version + constraints prevents this.
 
 #### CUDA Compatibility Check
 
-If you see `torch.cuda.is_available() == False` or `The NVIDIA driver on your system is too old`, your PyTorch CUDA wheel may be newer than your NVIDIA driver supports. Verify with:
+If you see `torch.cuda.is_available() == False` or `The NVIDIA driver on your system is too old`, your PyTorch CUDA wheel is newer than your NVIDIA driver supports.
 
 ```bash
 nvidia-smi
-
 python -c "import torch; print('torch:', torch.__version__); print('torch cuda:', torch.version.cuda); print('cuda available:', torch.cuda.is_available())"
 ```
 
@@ -72,11 +91,8 @@ If CUDA is unavailable, reinstall PyTorch with a compatible CUDA version:
 
 ```bash
 pip uninstall -y torch torchvision torchaudio triton
-pip install --no-cache-dir torch torchvision torchaudio \
-  --index-url https://download.pytorch.org/whl/cu126
+pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
 ```
-
-> **Important:** Always install `requirements.txt` first, then install PyTorch separately. Installing torch via requirements.txt may overwrite a working CUDA-compatible version.
 
 ### 2. Download Qwen3-8B
 

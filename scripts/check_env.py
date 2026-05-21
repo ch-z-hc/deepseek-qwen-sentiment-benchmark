@@ -63,10 +63,28 @@ def main():
     try:
         import torch
         ok("torch.cuda.is_available()", torch.cuda.is_available())
+        ok("torch version", f"{torch.__version__} (CUDA {torch.version.cuda})")
         if torch.cuda.is_available():
             ok("cuda device count", torch.cuda.device_count())
             ok("cuda device 0", torch.cuda.get_device_name(0))
+            driver_cuda = torch.cuda.get_device_capability(0)
+            ok("GPU compute capability", f"{driver_cuda[0]}.{driver_cuda[1]}")
         else:
+            # Diagnose why CUDA is unavailable
+            torch_cuda_ver = torch.version.cuda
+            if torch_cuda_ver:
+                try:
+                    import subprocess
+                    result = subprocess.run(
+                        ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"],
+                        capture_output=True, text=True, timeout=10
+                    )
+                    if result.returncode == 0:
+                        drv = result.stdout.strip()
+                        warn("cuda", f"torch CUDA {torch_cuda_ver} vs driver {drv} — "
+                              f"torch wheel may be too new for this driver")
+                except Exception:
+                    pass
             warn("cuda", "not available; evaluation can run on CPU slowly, LoRA training is not recommended")
     except Exception as e:
         fail("cuda check", repr(e))
